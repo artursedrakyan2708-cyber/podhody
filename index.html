@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -251,7 +251,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     </div>
     <div class="daybar" id="daybar">
       <div class="seg" id="seg" role="group" aria-label="День программы"></div>
-      <label class="datechip" for="datein">
+      <label class="datechip">
         <span id="datelbl"></span>
         <input type="date" id="datein" aria-label="Дата тренировки">
       </label>
@@ -289,12 +289,138 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   </button>
 </nav>
 
+<script id="core">
+/* Чистая логика без DOM и Телеграма: её проверяют тесты в tests/. */
+var Core = (function () {
+  'use strict';
+
+  var FEEL = { 1: 'Легко', 2: 'Нормально', 3: 'На пределе' };
+  var MAXSETS = 6;
+
+  function num(v, lo, hi, def, isInt) {
+    v = typeof v === 'number' ? v : parseFloat(v);
+    if (!isFinite(v)) return def;
+    if (isInt) v = Math.round(v);
+    return Math.min(hi, Math.max(lo, v));
+  }
+  function r2(n) { return Math.round(n * 100) / 100; }
+  function roundTo(x, s) { return r2(Math.round(x / s) * s); }
+  function fmt(n) { return n == null ? '' : String(r2(n)).replace('.', ','); }
+  function plural(n, a, b, c) { var m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : (m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c); }
+  function cell0() { return { kg: null, reps: null }; }
+  function nn(v) { if (v == null || v === '') return null; v = +v; return isFinite(v) && v >= 0 ? v : null; }
+  function norm(e) {
+    var b = { w: cell0(), s: [], feel: null };
+    if (!e) return b;
+    function cp(src) { return { kg: src ? nn(src.kg) : null, reps: src ? nn(src.reps) : null }; }
+    b.w = cp(e.w);
+    var src = Array.isArray(e.s) ? e.s.slice(0, MAXSETS) : [];
+    b.s = src.map(cp);
+    b.feel = (e.feel === 1 || e.feel === 2 || e.feel === 3) ? e.feel : null;
+    return b;
+  }
+  function filled(c) { return c && (c.kg != null || c.reps != null); }
+  function lastFilled(e) { for (var i = e.s.length - 1; i >= 0; i--) if (filled(e.s[i])) return i; return -1; }
+  function topKg(e) { var m = null; norm(e).s.forEach(function (c) { if (c.kg != null && (m == null || c.kg > m)) m = c.kg; }); return m; }
+  function e1(c) { if (c.kg == null || c.reps == null || c.reps < 1) return null; return c.reps === 1 ? c.kg : c.kg * (1 + c.reps / 30); }
+  function bestOf(entry) {
+    var o = { kg: null, e1: null };
+    norm(entry).s.forEach(function (c) {
+      if (c.kg != null && (o.kg == null || c.kg > o.kg)) o.kg = c.kg;
+      var x = e1(c);
+      if (x != null && (o.e1 == null || x > o.e1)) o.e1 = x;
+    });
+    return o;
+  }
+  function enc(doc) {
+    var e = {};
+    Object.keys(doc.entries).forEach(function (k) {
+      var x = doc.entries[k], a = [x.feel, x.w.kg, x.w.reps];
+      x.s.forEach(function (c) { a.push(c.kg, c.reps); });
+      e[k] = a;
+    });
+    return JSON.stringify({ v: 2, d: doc.date, y: doc.day, e: e });
+  }
+  function dec(str) {
+    var o = JSON.parse(str), entries = {};
+    Object.keys(o.e || {}).forEach(function (k) {
+      var a = o.e[k] || [], s = [];
+      if (o.v === 2) {
+        for (var i = 3; i + 1 < a.length + 1 && i < 3 + MAXSETS * 2; i += 2) s.push({ kg: a[i], reps: a[i + 1] });
+        entries[k] = norm({ w: { kg: a[1], reps: a[2] }, s: s, feel: a[0] });
+      } else {
+        entries[k] = norm({ w: { kg: a[0], reps: a[1] }, s: [{ kg: a[2], reps: a[3] }, { kg: a[4], reps: a[5] }, { kg: a[6], reps: a[7] }], feel: a[8] });
+      }
+    });
+    return { date: o.d, day: Math.round(+o.y) || 1, entries: entries };
+  }
+  function suggest(ex, prev) {
+    var range = ex.lo + '–' + ex.hi;
+    if (!prev) {
+      return ex.start ? { kind: 'start', tag: 'Стартовый вес', kg: ex.start, reps: ex.lo, why: 'Цель: ' + ex.sets + ' ' + plural(ex.sets, 'подход', 'подхода', 'подходов') + ' по ' + range + ' повторов.' } : null;
+    }
+    var sets = prev.entry.s.filter(function (c) { return c.kg != null; });
+    if (!sets.length) return null;
+    var W = prev.kg;
+    var atW = sets.filter(function (c) { return c.kg === W; });
+    var minR = Math.min.apply(null, atW.map(function (c) { return c.reps == null ? 0 : c.reps; }));
+    var full = atW.length >= ex.sets && minR >= ex.hi;
+    if (full && prev.entry.feel !== 3) {
+      return { kind: 'up', tag: 'Повысьте вес', kg: r2(W + ex.step), reps: ex.lo, why: 'В прошлый раз во всех рабочих подходах ' + ex.hi + ' повторов и больше, это верх диапазона ' + range + '.' };
+    }
+    if (full) return { kind: 'hold', tag: 'Тот же вес', kg: W, reps: ex.hi, why: 'Повторы набраны, но вы отметили «на пределе». Закрепите этот вес ещё раз.' };
+    if (minR < ex.lo) return { kind: 'hold', tag: 'Тот же вес', kg: W, reps: ex.lo, why: 'Цель: хотя бы ' + ex.lo + ' повторов в каждом подходе.' };
+    return { kind: 'hold', tag: 'Тот же вес', kg: W, reps: Math.min(ex.hi, minR + 1), why: 'Добавляйте по повтору. Когда во всех подходах будет ' + ex.hi + ', вес вырастет на ' + fmt(ex.step) + ' кг.' };
+  }
+  function tsvCell(v) { return v == null ? '' : String(v).replace(/[\t\r\n]+/g, ' '); }
+
+  /* строки таблицы для Excel: dayName(id) и exName(id) дают подписи */
+  function workoutRows(sessions, dayName, exName) {
+    var rows = [['Дата', 'День', 'Упражнение', 'Подход', 'Вес, кг', 'Повторы', 'Ощущение']];
+    sessions.forEach(function (x) {
+      var dn = dayName(x.doc.day);
+      Object.keys(x.doc.entries).forEach(function (k) {
+        var e = norm(x.doc.entries[k]), nm = exName(k), fl = e.feel ? FEEL[e.feel] : '';
+        if (filled(e.w)) rows.push([x.doc.date, dn, nm, 'Разминка', fmt(e.w.kg), fmt(e.w.reps), '']);
+        e.s.forEach(function (c, i) { if (filled(c)) rows.push([x.doc.date, dn, nm, String(i + 1), fmt(c.kg), fmt(c.reps), fl]); });
+      });
+    });
+    return rows;
+  }
+  function toTsv(rows) { return rows.length < 2 ? '' : rows.map(function (r) { return r.map(tsvCell).join('\t'); }).join('\n'); }
+
+  return {
+    FEEL: FEEL, MAXSETS: MAXSETS,
+    num: num, r2: r2, roundTo: roundTo, fmt: fmt, plural: plural, cell0: cell0, nn: nn, norm: norm, filled: filled, lastFilled: lastFilled, topKg: topKg, e1: e1, bestOf: bestOf, enc: enc, dec: dec, suggest: suggest, tsvCell: tsvCell,
+    workoutRows: workoutRows, toTsv: toTsv
+  };
+})();
+if (typeof module !== 'undefined') module.exports = Core;
+</script>
+
 <script>
 (function () {
   'use strict';
 
-  var FEEL = { 1: 'Легко', 2: 'Нормально', 3: 'На пределе' };
-  var MAXV = 4096, MAXDAYS = 5, MAXSETS = 6;
+  var FEEL = Core.FEEL, MAXSETS = Core.MAXSETS;
+  var MAXV = 4096, MAXDAYS = 5;
+  var num = Core.num;
+  var r2 = Core.r2;
+  var roundTo = Core.roundTo;
+  var fmt = Core.fmt;
+  var plural = Core.plural;
+  var cell0 = Core.cell0;
+  var nn = Core.nn;
+  var norm = Core.norm;
+  var filled = Core.filled;
+  var lastFilled = Core.lastFilled;
+  var topKg = Core.topKg;
+  var e1 = Core.e1;
+  var bestOf = Core.bestOf;
+  var enc = Core.enc;
+  var dec = Core.dec;
+  var suggest = Core.suggest;
+  var tsvCell = Core.tsvCell;
 
   /* ---------- Телеграм ---------- */
   var tg = window.Telegram && window.Telegram.WebApp;
@@ -366,12 +492,6 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   }
 
   /* ---------- упражнения и программа ---------- */
-  function num(v, lo, hi, def, isInt) {
-    v = typeof v === 'number' ? v : parseFloat(v);
-    if (!isFinite(v)) return def;
-    if (isInt) v = Math.round(v);
-    return Math.min(hi, Math.max(lo, v));
-  }
   function newId() { return 'x' + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36); }
   function fixEx(e, day) {
     e = e || {};
@@ -543,9 +663,6 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   function addDays(s, n) { var d = dt(s); d.setDate(d.getDate() + n); return ymd(d); }
   function weekStart(s) { var d = dt(s); d.setDate(d.getDate() - (d.getDay() + 6) % 7); return ymd(d); }
   function curId() { return cur.date + '_d' + cur.day; }
-  function r2(n) { return Math.round(n * 100) / 100; }
-  function roundTo(x, s) { return r2(Math.round(x / s) * s); }
-  function fmt(n) { return n == null ? '' : String(r2(n)).replace('.', ','); }
   function nf(n) { return Math.round(n).toLocaleString('ru-RU'); }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function parseNum(s) { var v = parseFloat(String(s).replace(',', '.')); return isFinite(v) && v >= 0 ? v : null; }
@@ -553,34 +670,8 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   function longDate(s) { return dt(s).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }); }
   function chipDate(s) { return dt(s).toLocaleDateString('ru-RU', { weekday: 'short', day: 'numeric', month: 'long' }); }
   function isDate(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
-  function plural(n, a, b, c) { var m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : (m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c); }
-  function cell0() { return { kg: null, reps: null }; }
   function blank(n) { var s = []; for (var i = 0; i < (n || 3); i++) s.push(cell0()); return { w: cell0(), s: s, feel: null }; }
   function ensure(e, n) { while (e.s.length < n) e.s.push(cell0()); return e; }
-  function nn(v) { if (v == null || v === '') return null; v = +v; return isFinite(v) && v >= 0 ? v : null; }
-  function norm(e) {
-    var b = { w: cell0(), s: [], feel: null };
-    if (!e) return b;
-    function cp(src) { return { kg: src ? nn(src.kg) : null, reps: src ? nn(src.reps) : null }; }
-    b.w = cp(e.w);
-    var src = Array.isArray(e.s) ? e.s.slice(0, MAXSETS) : [];
-    b.s = src.map(cp);
-    b.feel = (e.feel === 1 || e.feel === 2 || e.feel === 3) ? e.feel : null;
-    return b;
-  }
-  function filled(c) { return c && (c.kg != null || c.reps != null); }
-  function lastFilled(e) { for (var i = e.s.length - 1; i >= 0; i--) if (filled(e.s[i])) return i; return -1; }
-  function topKg(e) { var m = null; norm(e).s.forEach(function (c) { if (c.kg != null && (m == null || c.kg > m)) m = c.kg; }); return m; }
-  function e1(c) { if (c.kg == null || c.reps == null || c.reps < 1) return null; return c.reps === 1 ? c.kg : c.kg * (1 + c.reps / 30); }
-  function bestOf(entry) {
-    var o = { kg: null, e1: null };
-    norm(entry).s.forEach(function (c) {
-      if (c.kg != null && (o.kg == null || c.kg > o.kg)) o.kg = c.kg;
-      var x = e1(c);
-      if (x != null && (o.e1 == null || x > o.e1)) o.e1 = x;
-    });
-    return o;
-  }
   function cellText(c) { return (!c || c.kg == null) ? '' : fmt(c.kg) + '×' + (c.reps == null ? '?' : fmt(c.reps)); }
   function chipsHtml(e, withFeel) {
     e = norm(e);
@@ -592,28 +683,6 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   }
 
   /* ---------- компактная запись тренировки ---------- */
-  function enc(doc) {
-    var e = {};
-    Object.keys(doc.entries).forEach(function (k) {
-      var x = doc.entries[k], a = [x.feel, x.w.kg, x.w.reps];
-      x.s.forEach(function (c) { a.push(c.kg, c.reps); });
-      e[k] = a;
-    });
-    return JSON.stringify({ v: 2, d: doc.date, y: doc.day, e: e });
-  }
-  function dec(str) {
-    var o = JSON.parse(str), entries = {};
-    Object.keys(o.e || {}).forEach(function (k) {
-      var a = o.e[k] || [], s = [];
-      if (o.v === 2) {
-        for (var i = 3; i + 1 < a.length + 1 && i < 3 + MAXSETS * 2; i += 2) s.push({ kg: a[i], reps: a[i + 1] });
-        entries[k] = norm({ w: { kg: a[1], reps: a[2] }, s: s, feel: a[0] });
-      } else {
-        entries[k] = norm({ w: { kg: a[0], reps: a[1] }, s: [{ kg: a[2], reps: a[3] }, { kg: a[4], reps: a[5] }, { kg: a[6], reps: a[7] }], feel: a[8] });
-      }
-    });
-    return { date: o.d, day: Math.round(+o.y) || 1, entries: entries };
-  }
 
   /* ---------- история ---------- */
   function sessionsSorted() {
@@ -667,24 +736,6 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   }
 
   /* ---------- подсказка прогрессии ---------- */
-  function suggest(ex, prev) {
-    var range = ex.lo + '–' + ex.hi;
-    if (!prev) {
-      return ex.start ? { kind: 'start', tag: 'Стартовый вес', kg: ex.start, reps: ex.lo, why: 'Цель: ' + ex.sets + ' ' + plural(ex.sets, 'подход', 'подхода', 'подходов') + ' по ' + range + ' повторов.' } : null;
-    }
-    var sets = prev.entry.s.filter(function (c) { return c.kg != null; });
-    if (!sets.length) return null;
-    var W = prev.kg;
-    var atW = sets.filter(function (c) { return c.kg === W; });
-    var minR = Math.min.apply(null, atW.map(function (c) { return c.reps == null ? 0 : c.reps; }));
-    var full = atW.length >= ex.sets && minR >= ex.hi;
-    if (full && prev.entry.feel !== 3) {
-      return { kind: 'up', tag: 'Повысьте вес', kg: r2(W + ex.step), reps: ex.lo, why: 'В прошлый раз во всех рабочих подходах ' + ex.hi + ' повторов и больше, это верх диапазона ' + range + '.' };
-    }
-    if (full) return { kind: 'hold', tag: 'Тот же вес', kg: W, reps: ex.hi, why: 'Повторы набраны, но вы отметили «на пределе». Закрепите этот вес ещё раз.' };
-    if (minR < ex.lo) return { kind: 'hold', tag: 'Тот же вес', kg: W, reps: ex.lo, why: 'Цель: хотя бы ' + ex.lo + ' повторов в каждом подходе.' };
-    return { kind: 'hold', tag: 'Тот же вес', kg: W, reps: Math.min(ex.hi, minR + 1), why: 'Добавляйте по повтору. Когда во всех подходах будет ' + ex.hi + ', вес вырастет на ' + fmt(ex.step) + ' кг.' };
-  }
 
   /* ---------- черновик текущей тренировки ---------- */
   function loadDraft() {
@@ -1479,23 +1530,14 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   }
 
   /* ---------- копирование и перенос ---------- */
-  function tsvCell(v) { return v == null ? '' : String(v).replace(/[\t\r\n]+/g, ' '); }
   function tableText(kind) {
     var rows;
     if (kind === 'body') {
       rows = [['Дата', 'Вес, кг']].concat(BODY.items.map(function (x) { return [x.date, fmt(x.kg)]; }));
     } else {
-      rows = [['Дата', 'День', 'Упражнение', 'Подход', 'Вес, кг', 'Повторы', 'Ощущение']];
-      sessionsSorted().forEach(function (x) {
-        var dn = dayById(x.doc.day).name;
-        Object.keys(x.doc.entries).forEach(function (k) {
-          var e = norm(x.doc.entries[k]), nm = exName(k), fl = e.feel ? FEEL[e.feel] : '';
-          if (filled(e.w)) rows.push([x.doc.date, dn, nm, 'Разминка', fmt(e.w.kg), fmt(e.w.reps), '']);
-          e.s.forEach(function (c, i) { if (filled(c)) rows.push([x.doc.date, dn, nm, String(i + 1), fmt(c.kg), fmt(c.reps), fl]); });
-        });
-      });
+      rows = Core.workoutRows(sessionsSorted(), function (d) { return dayById(d).name; }, exName);
     }
-    return rows.length < 2 ? '' : rows.map(function (r) { return r.map(tsvCell).join('\t'); }).join('\n');
+    return Core.toTsv(rows);
   }
   function backupText() {
     return JSON.stringify({ format: 'podhody', v: 2, S: S, plan: planDoc(), body: { items: BODY.items } });
