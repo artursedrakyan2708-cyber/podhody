@@ -2,6 +2,8 @@
 
 Мини-приложение для Telegram: дневник силовых тренировок. Записывайте разминку и рабочие подходы, а приложение подскажет, когда пора добавить вес, и покажет прогресс.
 
+Открыть: [@cocochalka_bot](https://t.me/cocochalka_bot) или сразу [приложение](https://t.me/cocochalka_bot?startapp). Адрес страницы: https://artursedrakyan2708-cyber.github.io/podhody/
+
 Всё приложение — один файл `index.html`. Сервер не нужен: страница размещена на GitHub Pages, а записи хранятся в облачном хранилище Telegram у каждого пользователя.
 
 ## Возможности
@@ -41,8 +43,8 @@
 
 Ссылки, которыми можно поделиться:
 
-- бот: `https://t.me/<имя_бота>`
-- сразу приложение: `https://t.me/<имя_бота>?startapp`
+- бот: `https://t.me/cocochalka_bot`
+- сразу приложение: `https://t.me/cocochalka_bot?startapp`
 
 ### Тексты для BotFather
 
