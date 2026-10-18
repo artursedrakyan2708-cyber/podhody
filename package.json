@@ -1,0 +1,13 @@
+{
+  "name": "podhody",
+  "private": true,
+  "description": "Дневник подходов: проверки для index.html",
+  "scripts": {
+    "test": "node --test \"tests/*.test.js\"",
+    "lint": "html-validate index.html",
+    "check": "npm run lint && npm test"
+  },
+  "devDependencies": {
+    "html-validate": "^9.0.0"
+  }
+}
