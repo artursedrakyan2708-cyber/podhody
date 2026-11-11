@@ -43,6 +43,24 @@
   --good: #5BD199; --good-soft: #173528; --warn: #E6B95C; --warn-soft: #3A2F14;
   color-scheme: dark;
 }
+/* Цвет акцента из настроек: светлый вариант, затем тёмный */
+:root[data-accent="violet"] { --accent: #6A3BD1; --accent-soft: #ECE5FB; }
+:root[data-accent="green"] { --accent: #18794E; --accent-soft: #DCF0E4; }
+:root[data-accent="orange"] { --accent: #B4510F; --accent-soft: #FBE8DA; }
+:root[data-accent="pink"] { --accent: #B8326E; --accent-soft: #F9E1EC; }
+:root[data-accent="graphite"] { --accent: #2E3A46; --accent-soft: #E1E6EB; }
+:root[data-theme="dark"][data-accent="violet"] { --accent: #B39BFF; --accent-soft: #2C2450; }
+:root[data-theme="dark"][data-accent="green"] { --accent: #5BD199; --accent-soft: #173528; }
+:root[data-theme="dark"][data-accent="orange"] { --accent: #FFA45C; --accent-soft: #3D2716; }
+:root[data-theme="dark"][data-accent="pink"] { --accent: #FF8DBE; --accent-soft: #42202F; }
+:root[data-theme="dark"][data-accent="graphite"] { --accent: #C5CED8; --accent-soft: #2A3038; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"])[data-accent="violet"] { --accent: #B39BFF; --accent-soft: #2C2450; }
+  :root:not([data-theme="light"])[data-accent="green"] { --accent: #5BD199; --accent-soft: #173528; }
+  :root:not([data-theme="light"])[data-accent="orange"] { --accent: #FFA45C; --accent-soft: #3D2716; }
+  :root:not([data-theme="light"])[data-accent="pink"] { --accent: #FF8DBE; --accent-soft: #42202F; }
+  :root:not([data-theme="light"])[data-accent="graphite"] { --accent: #C5CED8; --accent-soft: #2A3038; }
+}
 
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -67,14 +85,19 @@ button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-
 
 /* Шапка */
 .top { position: sticky; top: 0; z-index: 5; background: var(--bg); padding-block: 14px 10px; display: grid; gap: 10px; }
-.brand { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.brand { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.brand-r { display: flex; align-items: center; gap: 8px; min-width: 0; }
 h1 { font: 600 22px/1.1 var(--font-display); letter-spacing: .05em; text-transform: uppercase; margin: 0; }
-#status { font-size: 12px; color: var(--muted); }
+#status { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gear { flex: none; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--muted); cursor: pointer; }
+.gear[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.gear svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 #status.err { color: var(--warn); }
 .daybar { display: flex; gap: 8px; flex-wrap: wrap; }
 .seg { display: flex; flex-wrap: wrap; flex: 1 1 220px; gap: 3px; padding: 3px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; min-width: 0; }
 .seg button { flex: 1 1 0; min-width: 64px; min-height: 40px; padding: 0 10px; border: 0; border-radius: 9px; background: transparent; color: var(--muted); font-weight: 600; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
 .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.card .seg { background: var(--surface-2); margin: 4px 0 10px; }
 .datechip { position: relative; display: flex; align-items: center; min-height: 46px; padding: 0 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; font-size: 14px; white-space: nowrap; }
 .datechip input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
 .note { margin: 0; padding: 8px 12px; font-size: 12.5px; color: var(--warn); background: var(--warn-soft); border-radius: 10px; }
@@ -271,6 +294,17 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
 .btn.danger { background: none; border: 1px solid var(--warn); color: var(--warn); }
 .btn.danger.armed { background: var(--warn-soft); }
 .reset .chk { margin: 10px 0 2px; }
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 4px; }
+.swatch { width: 40px; height: 40px; border: 3px solid var(--surface); border-radius: 50%; box-shadow: 0 0 0 1px var(--line); cursor: pointer; }
+.swatch[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--ink); }
+.swatch[data-sw="blue"] { background: #2545C4; }
+.swatch[data-sw="violet"] { background: #6A3BD1; }
+.swatch[data-sw="green"] { background: #18794E; }
+.swatch[data-sw="orange"] { background: #D2691E; }
+.swatch[data-sw="pink"] { background: #D23F82; }
+.swatch[data-sw="graphite"] { background: #3C4A57; }
+.remind { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; }
+.remind p { margin: 0; flex: 1 1 200px; font-size: 13.5px; }
 .field { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 46px; font-size: 13.5px; }
 .field .fi { width: 76px; text-align: center; }
 .field .fi.wide { width: 170px; }
@@ -286,14 +320,19 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
 <div class="app">
   <header class="top">
     <div class="brand">
-      <h1>Дневник подходов</h1>
-      <span id="status" role="status" aria-live="polite">Загружаю…</span>
+      <h1 data-i18n="Дневник подходов">Дневник подходов</h1>
+      <div class="brand-r">
+        <span id="status" role="status" aria-live="polite">Загружаю…</span>
+        <button type="button" class="gear" id="setbtn" aria-pressed="false" aria-label="Настройки" data-i18n-aria="Настройки">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        </button>
+      </div>
     </div>
     <div class="daybar" id="daybar">
-      <div class="seg" id="seg" role="group" aria-label="День программы"></div>
+      <div class="seg" id="seg" role="group" aria-label="День программы" data-i18n-aria="День программы"></div>
       <label class="datechip" for="datein">
         <span id="datelbl"></span>
-        <input type="date" id="datein" aria-label="Дата тренировки">
+        <input type="date" id="datein" aria-label="Дата тренировки" data-i18n-aria="Дата тренировки">
       </label>
     </div>
     <p class="note" id="note" hidden></p>
@@ -302,30 +341,30 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
 </div>
 
 <div class="rest" id="rest" hidden>
-  <div class="rest-main"><span class="rl" id="rlabel" aria-live="polite">Отдых</span><span class="rt" id="rtime">0:00</span></div>
+  <div class="rest-main"><span class="rl" id="rlabel" aria-live="polite" data-i18n="Отдых">Отдых</span><span class="rt" id="rtime">0:00</span></div>
   <div class="rest-btns">
-    <button type="button" id="rminus">−15 с</button>
-    <button type="button" id="rplus">+15 с</button>
-    <button type="button" id="rstop">Готово</button>
+    <button type="button" id="rminus" data-i18n="−15 с">−15 с</button>
+    <button type="button" id="rplus" data-i18n="+15 с">+15 с</button>
+    <button type="button" id="rstop" data-i18n="Готово">Готово</button>
   </div>
 </div>
 
-<nav class="tabs" id="tabs" aria-label="Разделы">
+<nav class="tabs" id="tabs" aria-label="Разделы" data-i18n-aria="Разделы">
   <button type="button" id="tab-log" data-tab="log" aria-current="page">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6M6 7v10M18 7v10M21 9v6M6 12h12"/></svg>
-    Тренировка
+    <span data-i18n="Тренировка">Тренировка</span>
   </button>
   <button type="button" id="tab-prog" data-tab="prog">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/></svg>
-    Прогресс
+    <span data-i18n="Прогресс">Прогресс</span>
   </button>
   <button type="button" id="tab-over" data-tab="over">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M9 3v4M15 3v4"/></svg>
-    Обзор
+    <span data-i18n="Обзор">Обзор</span>
   </button>
   <button type="button" id="tab-plan" data-tab="plan">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>
-    План
+    <span data-i18n="План">План</span>
   </button>
 </nav>
 
@@ -333,18 +372,440 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
 (function () {
   'use strict';
 
-  var FEEL = { 1: 'Легко', 2: 'Нормально', 3: 'На пределе' };
+  /* ---------- язык и настройки ----------
+     Тексты пишутся по-русски и проходят через L(): для английского берётся перевод из EN по самой русской строке. */
+  var EN = {
+    "Легко": "Easy",
+    "Нормально": "Normal",
+    "На пределе": "Max effort",
+    "Вес × повторы": "Weight × reps",
+    "кг": "kg",
+    "повторы": "reps",
+    "Свой вес": "Bodyweight",
+    "доп. кг": "extra kg",
+    "На время": "Timed",
+    "секунды": "seconds",
+    "Кардио": "Cardio",
+    "км": "km",
+    "минуты": "minutes",
+    "Грудь": "Chest",
+    "Спина": "Back",
+    "Плечи": "Shoulders",
+    "Бицепс": "Biceps",
+    "Трицепс": "Triceps",
+    "Квадрицепс": "Quads",
+    "Бицепс бедра": "Hamstrings",
+    "Ягодицы": "Glutes",
+    "Икры": "Calves",
+    "Пресс": "Abs",
+    "Другое": "Other",
+    "повт.": "reps",
+    "сек": "sec",
+    "мин": "min",
+    "Упражнение": "Exercise",
+    "Фулбади, 2 дня": "Full body, 2 days",
+    "Всё тело за тренировку, два дня чередуются. Хороший старт для новичка.": "Whole body every workout, two days alternate. A good start for beginners.",
+    "Фулбади 1": "Full body 1",
+    "Гакк-присед": "Hack squat",
+    "Жим штанги лёжа": "Barbell bench press",
+    "Тяга верхнего блока": "Lat pulldown",
+    "Сгибание ног в тренажёре": "Machine leg curl",
+    "Жим гантелей сидя": "Seated dumbbell press",
+    "Сгибание рук с гантелями": "Dumbbell curl",
+    "Разгибание рук на блоке (трицепс)": "Cable triceps pushdown",
+    "Фулбади 2": "Full body 2",
+    "Жим ногами": "Leg press",
+    "Жим гантелей на наклонной скамье": "Incline dumbbell press",
+    "Тяга горизонтального блока": "Seated cable row",
+    "Разгибание ног в тренажёре": "Machine leg extension",
+    "Махи гантелями в стороны": "Dumbbell lateral raise",
+    "Подъём штанги на бицепс": "Barbell curl",
+    "Фулбади, 3 дня": "Full body, 3 days",
+    "Три разные тренировки на всё тело, например понедельник, среда, пятница.": "Three different full-body workouts, for example Monday, Wednesday, Friday.",
+    "Фулбади А": "Full body A",
+    "Приседания со штангой": "Barbell back squat",
+    "Фулбади Б": "Full body B",
+    "Фулбади В": "Full body C",
+    "Румынская тяга со штангой": "Barbell Romanian deadlift",
+    "Тяга гантели в наклоне": "One-arm dumbbell row",
+    "Выпады с гантелями": "Dumbbell lunges",
+    "Верх / низ, 4 дня": "Upper / lower, 4 days",
+    "Два дня на верх тела и два на ноги. Для тех, кто ходит четыре раза в неделю.": "Two upper-body days and two leg days. For those who train four times a week.",
+    "Верх А": "Upper A",
+    "Тяга штанги в наклоне": "Barbell bent-over row",
+    "Низ А": "Lower A",
+    "Подъём на носки стоя": "Standing calf raise",
+    "Верх Б": "Upper B",
+    "Молотки с гантелями": "Dumbbell hammer curl",
+    "Низ Б": "Lower B",
+    "Ягодичный мост со штангой": "Barbell hip thrust",
+    "Пустой план": "Empty plan",
+    "Один пустой день. Упражнения и дни добавите сами на вкладке «План».": "One empty day. Add exercises and days yourself on the Plan tab.",
+    "День 1": "Day 1",
+    "Фулбади ": "Full body ",
+    "День ": "Day ",
+    "Д": "D",
+    " мин": " min",
+    " ч ": " h ",
+    " кг": " kg",
+    "свой вес": "bodyweight",
+    " км": " km",
+    " кг · ": " kg · ",
+    " с": " s",
+    "<span class=\"c w\" title=\"Разминка\">р ": "<span class=\"c w\" title=\"Warm-up\">w ",
+    "Меньше веса грифа (": "Less than the bar weight (",
+    " кг).": " kg).",
+    "Только гриф.": "Bar only.",
+    "На каждую сторону: ": "Each side: ",
+    " (не хватает ": " (short by ",
+    " кг)": " kg)",
+    "Стартовый вес": "Starting weight",
+    "Цель: ": "Goal: ",
+    "подход": "set",
+    "подхода": "sets",
+    "подходов": "sets",
+    " по ": " of ",
+    " повторов.": " reps.",
+    "Повысьте вес": "Add weight",
+    "В прошлый раз во всех рабочих подходах ": "Last time every working set had ",
+    " повторов и больше, это верх диапазона ": " reps or more, the top of the range ",
+    "Тот же вес": "Same weight",
+    "Повторы набраны, но вы отметили «на пределе». Закрепите этот вес ещё раз.": "You hit the reps but marked it as max effort. Repeat this weight once more.",
+    "Возвращайтесь": "Go back up",
+    "После облегчённой тренировки вернитесь к рабочему весу ": "After the lighter workout, return to your working weight of ",
+    " кг.": " kg.",
+    "Разгрузка": "Deload",
+    "Вес ": "Weight ",
+    " кг держится три тренировки подряд. Сделайте одну тренировку с ": " kg has stayed for three workouts in a row. Do one workout with ",
+    " кг на верх диапазона, а в следующий раз вернитесь к ": " kg at the top of the range, then go back to ",
+    "Цель: хотя бы ": "Goal: at least ",
+    " повторов в каждом подходе.": " reps in every set.",
+    "Добавляйте по повтору. Когда во всех подходах будет ": "Add one rep at a time. When every set reaches ",
+    ", вес вырастет на ": ", the weight goes up by ",
+    " кг × ": " kg × ",
+    "Загружаю…": "Loading…",
+    "Сохраняю…": "Saving…",
+    "Не удалось сохранить": "Could not save",
+    "Сохранено на телефоне": "Saved on phone",
+    "Сохранено": "Saved",
+    "Сохранено в браузере": "Saved in browser",
+    "Не сохраняется": "Not saved",
+    "Слишком большая запись, не сохранено": "Record too large, not saved",
+    "Не удалось загрузить данные из Телеграма. Проверьте интернет, закройте приложение и откройте снова.": "Could not load data from Telegram. Check your internet, then close the app and open it again.",
+    "Нет связи. Записи сохраняются на телефоне и отправятся в облако Телеграма, когда появится интернет.": "No connection. Records are saved on the phone and will be sent to Telegram cloud when the internet is back.",
+    "Браузер блокирует хранилище, записи пропадут после закрытия страницы.": "The browser blocks storage, records will be lost when the page is closed.",
+    "Эта версия Телеграма не умеет хранить данные в облаке, записи лежат только на этом устройстве. Обновите Телеграм.": "This Telegram version cannot store data in the cloud, records stay only on this device. Update Telegram.",
+    "Страница открыта не в Телеграме, поэтому записи хранятся только в этом браузере.": "The page is open outside Telegram, so records are stored only in this browser.",
+    "Пропущена запись": "Skipped record",
+    "<section class=\"card\"><p class=\"empty\">Загружаю ваши записи…</p></section>": "<section class=\"card\"><p class=\"empty\">Loading your records…</p></section>",
+    "Нет связи с хранилищем": "No connection to storage",
+    "<section class=\"card\"><p class=\"empty\">Записи не загрузились. Нажмите кнопку ниже, когда появится интернет.</p><div class=\"btnrow\"><button type=\"button\" class=\"btn\" data-reload=\"1\">Попробовать снова</button></div></section>": "<section class=\"card\"><p class=\"empty\">Records did not load. Tap the button below when the internet is back.</p><div class=\"btnrow\"><button type=\"button\" class=\"btn\" data-reload=\"1\">Try again</button></div></section>",
+    "день": "day",
+    "дня": "days",
+    "дней": "days",
+    "упражнение": "exercise",
+    "упражнения": "exercises",
+    "упражнений": "exercises",
+    "<section class=\"card hero\"><h2>Новая программа</h2><p>Текущие упражнения с записями уйдут в архив вместе с историей, их можно будет вернуть на вкладке «План».</p><div class=\"btnrow\"><button type=\"button\" class=\"btn ghost\" data-cancel=\"1\">Отмена</button></div></section>": "<section class=\"card hero\"><h2>New program</h2><p>Current exercises with records will move to the archive along with their history. You can bring them back on the Plan tab.</p><div class=\"btnrow\"><button type=\"button\" class=\"btn ghost\" data-cancel=\"1\">Cancel</button></div></section>",
+    "<section class=\"card hero\"><h2>Добро пожаловать</h2><p>Дневник для силовых тренировок: записывайте веса и повторы и смотрите, как растут цифры.</p>": "<section class=\"card hero\"><h2>Welcome</h2><p>A strength training log: record weights and reps and watch the numbers grow.</p>",
+    "<ul class=\"how\"><li>Выберите программу ниже. Её можно поменять на вкладке «План»: добавить дни, упражнения и число подходов.</li>": "<ul class=\"how\"><li>Choose a program below. You can change it on the Plan tab: add days, exercises and sets.</li>",
+    "<li>На тренировке вводите вес и повторы: разминку и рабочие подходы. Подсказка покажет, когда пора добавить вес.</li>": "<li>During a workout, enter weight and reps for the warm-up and working sets. The hint shows when it is time to add weight.</li>",
+    "<li>Записи хранятся в вашем аккаунте Телеграма и видны только вам.</li></ul></section>": "<li>Records are stored in your Telegram account and only you can see them.</li></ul></section>",
+    "<details class=\"card\"><summary>У меня есть резервная копия</summary>": "<details class=\"card\"><summary>I have a backup</summary>",
+    "<p class=\"sub\">Вставьте текст резервной копии из раздела «Обзор → Данные».</p>": "<p class=\"sub\">Paste the backup text from Overview → Data.</p>",
+    "<textarea class=\"fi mono\" id=\"impbox\" rows=\"3\" placeholder=\"Вставьте сюда текст\" aria-label=\"Данные для загрузки\"></textarea>": "<textarea class=\"fi mono\" id=\"impbox\" rows=\"3\" placeholder=\"Paste the text here\" aria-label=\"Data to load\"></textarea>",
+    "<div class=\"btnrow\"><button type=\"button\" class=\"btn\" data-import=\"1\">Загрузить</button></div><p class=\"msg\" id=\"imsg\"></p></details>": "<div class=\"btnrow\"><button type=\"button\" class=\"btn\" data-import=\"1\">Load</button></div><p class=\"msg\" id=\"imsg\"></p></details>",
+    "<p class=\"sect\">Выберите программу</p><div class=\"tpls\">": "<p class=\"sect\">Choose a program</p><div class=\"tpls\">",
+    "Рекорд веса": "Weight PR",
+    "Рекорд": "PR",
+    "Рекорд 1ПМ": "1RM PR",
+    "Тренировка «": "Workout «",
+    "объём ": "volume ",
+    "Рекорды: ": "PRs: ",
+    "Записано в «Дневнике подходов»": "Logged in the “Set Diary”",
+    "<dl class=\"stats\"><div><dt>Время</dt><dd>": "<dl class=\"stats\"><div><dt>Time</dt><dd>",
+    "</dd></div><div><dt>Подходов</dt><dd>": "</dd></div><div><dt>Sets</dt><dd>",
+    "<div><dt>Объём</dt><dd>": "<div><dt>Volume</dt><dd>",
+    "Объём ": "Volume ",
+    "% к прошлой тренировке этого дня.": "% vs. the last workout of this day.",
+    "Рекорд: ": "PR: ",
+    "Следующая тренировка: ": "Next workout: ",
+    "<section class=\"card sum\"><h2>Тренировка завершена</h2>": "<section class=\"card sum\"><h2>Workout finished</h2>",
+    "<div class=\"btnrow\"><button type=\"button\" class=\"btn\" data-share=\"1\">Поделиться результатом</button><button type=\"button\" class=\"btn ghost\" data-resume=\"1\">Продолжить тренировку</button></div><p class=\"msg info\" id=\"smsg\"></p></section>": "<div class=\"btnrow\"><button type=\"button\" class=\"btn\" data-share=\"1\">Share result</button><button type=\"button\" class=\"btn ghost\" data-resume=\"1\">Continue workout</button></div><p class=\"msg info\" id=\"smsg\"></p></section>",
+    "<section class=\"card live\"><span><span class=\"lt\">Тренировка идёт</span><span class=\"lv\" id=\"elapsed\">": "<section class=\"card live\"><span><span class=\"lt\">Workout in progress</span><span class=\"lv\" id=\"elapsed\">",
+    "<button type=\"button\" class=\"btn\" data-finish=\"1\">Завершить</button></section>": "<button type=\"button\" class=\"btn\" data-finish=\"1\">Finish</button></section>",
+    "<div class=\"startrow\"><button type=\"button\" class=\"btn\" data-start=\"1\">Начать тренировку</button><p class=\"sub\">Секундомер запустится и сам, когда вы введёте первый подход.</p></div>": "<div class=\"startrow\"><button type=\"button\" class=\"btn\" data-start=\"1\">Start workout</button><p class=\"sub\">The stopwatch also starts by itself when you enter the first set.</p></div>",
+    " на гантель": " per dumbbell",
+    "<optgroup label=\"Вне плана\">": "<optgroup label=\"Not in plan\">",
+    "\" aria-label=\"Упражнение\">": "\" aria-label=\"Exercise\">",
+    "<option value=\"\">Выберите упражнение</option>": "<option value=\"\">Choose an exercise</option>",
+    "<option value=\"__new\">Новое упражнение…</option></select>": "<option value=\"__new\">New exercise…</option></select>",
+    "\" type=\"text\" maxlength=\"80\" placeholder=\"Название нового упражнения\" aria-label=\"Название нового упражнения\" hidden>": "\" type=\"text\" maxlength=\"80\" placeholder=\"New exercise name\" aria-label=\"New exercise name\" hidden>",
+    "Добавить": "Add",
+    "Заменить": "Replace",
+    "<button type=\"button\" class=\"btn ghost small\" data-swapno=\"1\">Отмена</button></div></div>": "<button type=\"button\" class=\"btn ghost small\" data-swapno=\"1\">Cancel</button></div></div>",
+    "Прошлый раз, ": "Last time, ",
+    "Записей ещё нет.": "No records yet.",
+    "<div class=\"sugg\"><span class=\"sw\">Подберите вес, с которым получается ": "<div class=\"sugg\"><span class=\"sw\">Pick a weight you can do for ",
+    " повторов. Со следующей тренировки здесь будет подсказка.</span></div>": " reps with. From the next workout there will be a hint here.</span></div>",
+    "Разминка": "Warm-up",
+    "Отрезок ": "Interval ",
+    "Подход ": "Set ",
+    "\">Как в прошлый раз</button>": "\">Same as last time</button>",
+    "\">Вес по подсказке</button>": "\">Use hint weight</button>",
+    "\">Вернуть «": "\">Bring back «",
+    "\">Заменить на сегодня</button>": "\">Replace for today</button>",
+    ", 1 гантель": ", 1 dumbbell",
+    "<p class=\"swapnote\">Сегодня вместо «": "<p class=\"swapnote\">Today instead of «",
+    "<div class=\"feel\" role=\"group\" aria-label=\"Как прошло упражнение\"><span class=\"fl\">Как зашло:</span>": "<div class=\"feel\" role=\"group\" aria-label=\"How did the exercise go\"><span class=\"fl\">How it felt:</span>",
+    "><summary>Заметка и настройки тренажёра</summary>": "><summary>Note and machine settings</summary>",
+    "\" rows=\"2\" maxlength=\"500\" placeholder=\"Например: сиденье 4, валик на 3, хват средний\">": "\" rows=\"2\" maxlength=\"500\" placeholder=\"For example: seat 4, pad 3, medium grip\">",
+    "<section class=\"card\"><p class=\"empty\">В этом дне пока нет упражнений. Добавьте их на вкладке «План».</p>": "<section class=\"card\"><p class=\"empty\">This day has no exercises yet. Add them on the Plan tab.</p>",
+    "<div class=\"btnrow\"><button type=\"button\" class=\"btn\" data-goplan=\"1\">Открыть «План»</button></div></section>": "<div class=\"btnrow\"><button type=\"button\" class=\"btn\" data-goplan=\"1\">Open Plan</button></div></section>",
+    "<section class=\"card\"><h2>Первая тренировка</h2><ul class=\"how\">": "<section class=\"card\"><h2>First workout</h2><ul class=\"how\">",
+    "<li>Нажмите на поле, и под ним появятся кнопки «−» и «+». Серая цифра в пустом поле подставляется кнопкой «Подставить».</li>": "<li>Tap a field and − and + buttons appear under it. The grey number in an empty field is filled in with the “Fill in” button.</li>",
+    "<li>Разминочный подход записывайте в строку «Разминка», в графики он не идёт.</li>": "<li>Record your warm-up set in the “Warm-up” row, it does not count in charts.</li>",
+    "<li>После каждого подхода запустится таймер отдыха. Отключить его можно в настройках (шестерёнка вверху).</li></ul></section>": "<li>The rest timer starts after each set. You can turn it off in Settings (gear at the top).</li></ul></section>",
+    "<div class=\"btnrow\"><button type=\"button\" class=\"btn ghost\" data-swap=\"_add\">Добавить упражнение в эту тренировку</button></div>": "<div class=\"btnrow\"><button type=\"button\" class=\"btn ghost\" data-swap=\"_add\">Add an exercise to this workout</button></div>",
+    "<div class=\"btnrow\"><button type=\"button\" class=\"btn wide\" data-finish=\"1\">Завершить тренировку</button></div>": "<div class=\"btnrow\"><button type=\"button\" class=\"btn wide\" data-finish=\"1\">Finish workout</button></div>",
+    "><button type=\"button\" class=\"btn danger small\" data-sdelcur=\"1\">Удалить эту тренировку</button></div>": "><button type=\"button\" class=\"btn danger small\" data-sdelcur=\"1\">Delete this workout</button></div>",
+    "<p class=\"foot\">Разминка не идёт в графики и рекорды. Подсказка веса считается по прошлым тренировкам и диапазону повторов из «Плана». Записи сохраняются сами.</p>": "<p class=\"foot\">The warm-up does not count in charts and PRs. The weight hint is based on past workouts and the rep range from the Plan. Records save automatically.</p>",
+    "= как в прошлый раз": "= same as last time",
+    "Объём прошлой тренировки этого дня: ": "Volume of the last workout of this day: ",
+    "Объём сегодня: ": "Volume today: ",
+    " · в прошлый раз ": " · last time ",
+    " кг (": " kg (",
+    "<button type=\"button\" data-st=\"-1\" aria-label=\"Уменьшить на ": "<button type=\"button\" data-st=\"-1\" aria-label=\"Decrease by ",
+    "<button type=\"button\" data-st=\"1\" aria-label=\"Увеличить на ": "<button type=\"button\" data-st=\"1\" aria-label=\"Increase by ",
+    "<button type=\"button\" class=\"fill\" data-st=\"fill\">Подставить ": "<button type=\"button\" class=\"fill\" data-st=\"fill\">Fill in ",
+    "Пора на подход": "Time for the next set",
+    "Отдых": "Rest",
+    "\" role=\"img\" aria-label=\"Объём тренировок, кг\">": "\" role=\"img\" aria-label=\"Workout volume, kg\">",
+    "первая запись": "first record",
+    "нет записей": "no records",
+    " с начала": " since start",
+    "без изменений": "no change",
+    "<section class=\"card\"><p class=\"empty\">В плане нет упражнений. Добавьте их на вкладке «План».</p></section>": "<section class=\"card\"><p class=\"empty\">The plan has no exercises. Add them on the Plan tab.</p></section>",
+    "дополнительный вес, кг": "extra weight, kg",
+    "максимальный рабочий вес, кг": "top working weight, kg",
+    "лучший подход, повторы": "best set, reps",
+    "лучший подход, секунды": "best set, seconds",
+    "дистанция за тренировку, км": "distance per workout, km",
+    "время за тренировку, минуты": "time per workout, minutes",
+    "<p class=\"empty\">По этому упражнению записей нет. После первой тренировки здесь появится точка, после второй график получит линию.</p>": "<p class=\"empty\">No records for this exercise yet. After the first workout a point appears here, after the second the chart gets a line.</p>",
+    "Лучший вес": "Best weight",
+    "Лучший результат": "Best result",
+    "<div><dt>Расчётный 1ПМ</dt><dd>": "<div><dt>Estimated 1RM</dt><dd>",
+    "<div><dt>Тип</dt><dd style=\"font-size:15px\">": "<div><dt>Type</dt><dd style=\"font-size:15px\">",
+    "<div><dt>Тренировок</dt><dd>": "<div><dt>Workouts</dt><dd>",
+    "<p class=\"sect\">Вне плана</p><div class=\"slist\">": "<p class=\"sect\">Not in plan</p><div class=\"slist\">",
+    "вне плана": "not in plan",
+    " (одна гантель)": " (one dumbbell)",
+    ". 1ПМ считается по формуле Эпли, это ориентир, а не норматив.": ". 1RM uses the Epley formula, it is a guide, not a standard.",
+    "План недели выполнен: ": "Weekly goal reached: ",
+    " из ": " of ",
+    "Сделано ": "Done ",
+    ". Следующая тренировка: ": ". Next workout: ",
+    "<section class=\"card\"><h2>Эта неделя</h2><div class=\"dots\" aria-hidden=\"true\">": "<section class=\"card\"><h2>This week</h2><div class=\"dots\" aria-hidden=\"true\">",
+    "<p class=\"sub\">Недель подряд с выполненным планом: ": "<p class=\"sub\">Weeks in a row with the goal reached: ",
+    ". Цель меняется в настройках.</p></section>": ". Change the goal in Settings.</p></section>",
+    "Без группы": "No group",
+    "<section class=\"card\"><h2>Подходы на мышцы</h2><p class=\"sub\">Рабочие подходы на этой неделе, в скобках — на прошлой. Для роста мышц обычно советуют 10–20 подходов в неделю на группу: метка на шкале — 10, правый край — 20.": "<section class=\"card\"><h2>Sets per muscle</h2><p class=\"sub\">Working sets this week, last week in brackets. For muscle growth, 10–20 sets per week per group are usually advised: the mark on the bar is 10, the right edge is 20.",
+    " Группу упражнения можно указать на вкладке «План».": " You can set the muscle group of an exercise on the Plan tab.",
+    "Пн": "Mo",
+    "Вт": "Tu",
+    "Ср": "We",
+    "Чт": "Th",
+    "Пт": "Fr",
+    "Сб": "Sa",
+    "Вс": "Su",
+    " и ": " and ",
+    ", без тренировки": ", no workout",
+    "<section class=\"card\"><h2>Календарь</h2><p class=\"sub\">Последние 8 недель. ": "<section class=\"card\"><h2>Calendar</h2><p class=\"sub\">Last 8 weeks. ",
+    ". Нажмите на день, чтобы открыть или дописать тренировку.</p><div class=\"cal\">": ". Tap a day to open or continue a workout.</p><div class=\"cal\">",
+    " упр.": " ex.",
+    "\" aria-label=\"Удалить тренировку ": "\" aria-label=\"Delete workout ",
+    "<div class=\"btnrow\"><button type=\"button\" class=\"btn ghost small\" data-more=\"1\">Показать ещё</button></div>": "<div class=\"btnrow\"><button type=\"button\" class=\"btn ghost small\" data-more=\"1\">Show more</button></div>",
+    "<section class=\"card\"><h2>Все тренировки</h2><p class=\"sub\">Всего: ": "<section class=\"card\"><h2>All workouts</h2><p class=\"sub\">Total: ",
+    ". Нажмите на тренировку, чтобы открыть её.</p>": ". Tap a workout to open it.</p>",
+    "<section class=\"card\"><h2>Объём тренировок</h2><p class=\"empty\">Появится после первой тренировки: сумма «вес × повторы» по рабочим подходам.</p></section>": "<section class=\"card\"><h2>Workout volume</h2><p class=\"empty\">Appears after the first workout: the sum of weight × reps over working sets.</p></section>",
+    " · к прошлой тренировке этого дня: ": " · vs. the last workout of this day: ",
+    " кг</span></div>": " kg</span></div>",
+    "<section class=\"card\"><h2>Объём тренировок</h2><p class=\"sub\">Сумма «вес × повторы» по рабочим подходам упражнений с весом, гантели считаются парой. Сравнивайте с тем же днём программы: упражнения разные.</p>": "<section class=\"card\"><h2>Workout volume</h2><p class=\"sub\">Sum of weight × reps over working sets of weighted exercises, dumbbells count as a pair. Compare with the same program day: the exercises differ.</p>",
+    "\" aria-label=\"Вес тела, кг\">": "\" aria-label=\"Body weight, kg\">",
+    "\" aria-label=\"Дата взвешивания\">": "\" aria-label=\"Weigh-in date\">",
+    "<button type=\"submit\" class=\"btn\">Записать</button></form><p class=\"msg\" id=\"bmsg\"></p>": "<button type=\"submit\" class=\"btn\">Save</button></form><p class=\"msg\" id=\"bmsg\"></p>",
+    "Вес тела по датам": "Body weight by date",
+    "<br>С начала записей: ": "<br>Since first record: ",
+    " кг</span><button type=\"button\" class=\"x\" data-bdel=\"": " kg</span><button type=\"button\" class=\"x\" data-bdel=\"",
+    "\" aria-label=\"Удалить запись за ": "\" aria-label=\"Delete record for ",
+    "<p class=\"empty\">Взвешивайтесь утром натощак раз в неделю, так цифры честнее.</p>": "<p class=\"empty\">Weigh yourself in the morning on an empty stomach once a week, the numbers are more honest that way.</p>",
+    "<section class=\"card\"><h2>Вес тела</h2>": "<section class=\"card\"><h2>Body weight</h2>",
+    "<section class=\"card\"><h2>Данные</h2>": "<section class=\"card\"><h2>Data</h2>",
+    "<p class=\"sub\">Таблицу можно сразу вставить в Excel или Google Таблицы. Резервная копия восстанавливает всё, включая план, заметки и настройки: сохраните её, например, в «Избранное» Телеграма.</p>": "<p class=\"sub\">The table can be pasted straight into Excel or Google Sheets. The backup restores everything, including the plan, notes and settings: save it, for example, to Telegram “Saved Messages”.</p>",
+    "<div class=\"btnrow\"><button type=\"button\" class=\"btn ghost small\" data-cp=\"train\">Скопировать тренировки</button>": "<div class=\"btnrow\"><button type=\"button\" class=\"btn ghost small\" data-cp=\"train\">Copy workouts</button>",
+    "<button type=\"button\" class=\"btn ghost small\" data-cp=\"body\">Скопировать вес тела</button>": "<button type=\"button\" class=\"btn ghost small\" data-cp=\"body\">Copy body weight</button>",
+    "<button type=\"button\" class=\"btn ghost small\" data-cp=\"backup\">Скопировать резервную копию</button></div>": "<button type=\"button\" class=\"btn ghost small\" data-cp=\"backup\">Copy backup</button></div>",
+    "<p class=\"msg info\" id=\"dmsg\"></p><textarea class=\"fi mono\" id=\"copybox\" rows=\"5\" readonly hidden aria-label=\"Текст для копирования\"></textarea>": "<p class=\"msg info\" id=\"dmsg\"></p><textarea class=\"fi mono\" id=\"copybox\" rows=\"5\" readonly hidden aria-label=\"Text to copy\"></textarea>",
+    "<h3>Загрузить данные</h3><p class=\"sub\">Вставьте текст резервной копии. Тренировки с теми же датами заменятся, остальные записи останутся.</p>": "<h3>Load data</h3><p class=\"sub\">Paste the backup text. Workouts with the same dates will be replaced, other records stay.</p>",
+    "<div class=\"btnrow\"><button type=\"button\" class=\"btn\" data-import=\"1\">Загрузить</button></div><p class=\"msg\" id=\"imsg\"></p></section>": "<div class=\"btnrow\"><button type=\"button\" class=\"btn\" data-import=\"1\">Load</button></div><p class=\"msg\" id=\"imsg\"></p></section>",
+    "<section class=\"card reset\"><h2>Начать заново</h2>": "<section class=\"card reset\"><h2>Start over</h2>",
+    "<p class=\"sub\">Удаляет все тренировки и вес тела, например после долгого перерыва. Вернуть их можно только из резервной копии, поэтому сначала скопируйте её и сохраните, например, в «Избранное» Телеграма.</p>": "<p class=\"sub\">Deletes all workouts and body weight, for example after a long break. They can only be restored from a backup, so copy it first and save it, for example, to Telegram “Saved Messages”.</p>",
+    "<div class=\"btnrow\"><button type=\"button\" class=\"btn ghost small\" data-cp=\"backup\" data-cpm=\"rmsg\">Скопировать резервную копию</button></div>": "<div class=\"btnrow\"><button type=\"button\" class=\"btn ghost small\" data-cp=\"backup\" data-cpm=\"rmsg\">Copy backup</button></div>",
+    "<textarea class=\"fi mono\" id=\"rbox\" rows=\"4\" readonly hidden aria-label=\"Резервная копия для копирования\"></textarea>": "<textarea class=\"fi mono\" id=\"rbox\" rows=\"4\" readonly hidden aria-label=\"Backup to copy\"></textarea>",
+    "<label class=\"chk\"><input type=\"checkbox\" id=\"rs_plan\">Удалить и программу: дни, упражнения, заметки</label>": "<label class=\"chk\"><input type=\"checkbox\" id=\"rs_plan\">Delete the program too: days, exercises, notes</label>",
+    "<div class=\"btnrow\"><button type=\"button\" class=\"btn danger\" data-reset=\"1\">Удалить все записи</button></div></section>": "<div class=\"btnrow\"><button type=\"button\" class=\"btn danger\" data-reset=\"1\">Delete all records</button></div></section>",
+    "Отрезков": "Intervals",
+    "Рабочих подходов": "Working sets",
+    "Повторы от": "Reps from",
+    "Повторы до": "Reps to",
+    "Шаг доп. веса, кг": "Extra weight step, kg",
+    "Шаг веса, кг": "Weight step, kg",
+    "Отдых, сек": "Rest, sec",
+    "<option value=\"\">Не указана</option>": "<option value=\"\">Not set</option>",
+    ">Гантели (вес одной)</label>": ">Dumbbells (weight of one)</label>",
+    ">Штанга (считать блины)</label></span>": ">Barbell (count plates)</label></span>",
+    "\" data-pf=\"name\" type=\"text\" autocomplete=\"off\" maxlength=\"80\" aria-label=\"Название упражнения\" value=\"": "\" data-pf=\"name\" type=\"text\" autocomplete=\"off\" maxlength=\"80\" aria-label=\"Exercise name\" value=\"",
+    "<div class=\"psel\"><label>Тип<select class=\"fi\" id=\"p_": "<div class=\"psel\"><label>Type<select class=\"fi\" id=\"p_",
+    "<label>Группа мышц<select class=\"fi\" id=\"p_": "<label>Muscle group<select class=\"fi\" id=\"p_",
+    "\" aria-label=\"Выше\"": "\" aria-label=\"Move up\"",
+    "\" aria-label=\"Ниже\"": "\" aria-label=\"Move down\"",
+    "\">Удалить</button></span></div></div>": "\">Delete</button></span></div></div>",
+    "<details class=\"card\"><summary>Как пользоваться</summary><ul class=\"how\">": "<details class=\"card\"><summary>How to use</summary><ul class=\"how\">",
+    "<li>«Тренировка»: выберите день вверху и вводите вес и повторы. Под полем появляются кнопки «−» и «+», серые цифры подставляются кнопкой «Подставить».</li>": "<li>Workout: choose a day at the top and enter weight and reps. − and + buttons appear under the field, grey numbers are filled in with the “Fill in” button.</li>",
+    "<li>Подсказка веса: когда во всех рабочих подходах набран верх диапазона повторов, вес растёт на шаг. Если вес стоит три тренировки подряд, подсказка предложит разгрузку.</li>": "<li>Weight hint: when every working set reaches the top of the rep range, the weight goes up by one step. If the weight stays the same for three workouts in a row, the hint suggests a deload.</li>",
+    "<li>Таймер отдыха запускается сам, когда подход заполнен. После последнего подхода не запускается.</li>": "<li>The rest timer starts by itself when a set is filled in. It does not start after the last set.</li>",
+    "<li>«Начать» и «Завершить» засекают время тренировки и показывают итог, которым можно поделиться в чат.</li>": "<li>Start and Finish track the workout time and show a summary you can share to a chat.</li>",
+    "<li>Если тренажёр занят, упражнение можно заменить только на сегодня: план не изменится.</li>": "<li>If a machine is busy, you can replace an exercise for today only: the plan stays the same.</li>",
+    "<li>Без интернета записи сохраняются на телефоне и отправляются в облако, когда связь появится.</li>": "<li>Without internet, records are saved on the phone and sent to the cloud when the connection is back.</li>",
+    "<li>Язык, тема, цвет, таймер и цель на неделю — в настройках (шестерёнка вверху). Резервная копия и таблица для Excel: «Обзор → Данные».</li></ul></details>": "<li>Language, theme, color, timer and weekly goal are in Settings (gear at the top). Backup and Excel table: Overview → Data.</li></ul></details>",
+    ">Запускать таймер отдыха после подхода</label>": ">Start the rest timer after a set</label>",
+    "<div class=\"field\"><label for=\"set_goal\">Тренировок в неделю (цель)</label><input class=\"fi\" id=\"set_goal\" type=\"text\" inputmode=\"numeric\" value=\"": "<div class=\"field\"><label for=\"set_goal\">Workouts per week (goal)</label><input class=\"fi\" id=\"set_goal\" type=\"text\" inputmode=\"numeric\" value=\"",
+    "<div class=\"field\"><label for=\"set_bar\">Вес грифа, кг</label><input class=\"fi\" id=\"set_bar\" type=\"text\" inputmode=\"decimal\" value=\"": "<div class=\"field\"><label for=\"set_bar\">Bar weight, kg</label><input class=\"fi\" id=\"set_bar\" type=\"text\" inputmode=\"decimal\" value=\"",
+    "<div class=\"field\"><label for=\"set_plates\">Блины в зале, кг (через пробел)</label><input class=\"fi wide\" id=\"set_plates\" type=\"text\" inputmode=\"decimal\" value=\"": "<div class=\"field\"><label for=\"set_plates\">Plates in the gym, kg (space-separated)</label><input class=\"fi wide\" id=\"set_plates\" type=\"text\" inputmode=\"decimal\" value=\"",
+    "\" type=\"text\" maxlength=\"30\" autocomplete=\"off\" aria-label=\"Название дня\" value=\"": "\" type=\"text\" maxlength=\"30\" autocomplete=\"off\" aria-label=\"Day name\" value=\"",
+    ">Удалить день</button></div>": ">Delete day</button></div>",
+    "\">Добавить упражнение</button></div>": "\">Add exercise</button></div>",
+    "<button type=\"button\" class=\"btn\" data-dadd=\"1\">Добавить день</button>": "<button type=\"button\" class=\"btn\" data-dadd=\"1\">Add day</button>",
+    "<button type=\"button\" class=\"btn ghost\" data-choose=\"1\">Сменить программу на шаблон</button></div>": "<button type=\"button\" class=\"btn ghost\" data-choose=\"1\">Switch program to a template</button></div>",
+    "<p class=\"sect\">Вне плана (история сохранена)</p><section class=\"card\">": "<p class=\"sect\">Not in plan (history kept)</p><section class=\"card\">",
+    "\">Добавить в «": "\">Add to «",
+    "Точно удалить?": "Delete for sure?",
+    "Новое упражнение": "New exercise",
+    "Точно удалить день?": "Delete this day?",
+    "Дата": "Date",
+    "Вес, кг": "Weight, kg",
+    "День": "Day",
+    "Тип": "Type",
+    "Подход": "Set",
+    "Вес, кг / км": "Weight, kg / km",
+    "Повторы / сек / мин": "Reps / sec / min",
+    "Ощущение": "Feeling",
+    "Все записи и программа удалены. Выберите программу, чтобы начать заново.": "All records and the program are deleted. Choose a program to start over.",
+    "Все тренировки и вес тела удалены. Программа осталась, можно начинать заново.": "All workouts and body weight are deleted. The program stays, you can start over.",
+    "Скопировать автоматически не получилось.": "Could not copy automatically.",
+    " Текст выделен ниже, скопируйте его вручную.": " The text is selected below, copy it manually.",
+    "Пока нечего копировать.": "Nothing to copy yet.",
+    "Итог скопирован, вставьте его в любой чат.": "Summary copied, paste it into any chat.",
+    "Не получилось прочитать текст. Скопируйте его целиком ещё раз.": "Could not read the text. Copy it in full once more.",
+    "Это не данные дневника подходов.": "This is not Set Diary data.",
+    "Загружено тренировок: ": "Workouts loaded: ",
+    "Введите вес от 25 до 300 кг.": "Enter a weight from 25 to 300 kg.",
+    "Точно удалить тренировку?": "Delete this workout?",
+    "Тренировка удалена.": "Workout deleted.",
+    "Удалить всё вместе с программой? Нажмите ещё раз": "Delete everything including the program? Tap again",
+    "Удалить все тренировки и вес? Нажмите ещё раз": "Delete all workouts and weight? Tap again",
+    "Удалить все тренировки, вес тела и программу? Отменить это нельзя.": "Delete all workouts, body weight and the program? This cannot be undone.",
+    "Удалить все тренировки и вес тела? Программа останется. Отменить это нельзя.": "Delete all workouts and body weight? The program stays. This cannot be undone.",
+    "Удалить?": "Delete?",
+    "Резервная копия скопирована. Отправьте её себе в «Избранное» Телеграма.": "Backup copied. Send it to your Telegram “Saved Messages”.",
+    "Таблица скопирована, вставьте её в Excel или Google Таблицы.": "Table copied, paste it into Excel or Google Sheets.",
+    "Дневник подходов": "Set Diary",
+    "Настройки": "Settings",
+    "День программы": "Program day",
+    "Дата тренировки": "Workout date",
+    "−15 с": "−15 s",
+    "+15 с": "+15 s",
+    "Готово": "Done",
+    "Разделы": "Sections",
+    "Тренировка": "Workout",
+    "Прогресс": "Progress",
+    "Обзор": "Overview",
+    "План": "Plan",
+    "ниже нормы": "underweight",
+    "норма": "normal",
+    "выше нормы": "overweight",
+    "ожирение": "obesity",
+    "ИМТ ": "BMI ",
+    "Пора взвеситься: с прошлого взвешивания прошло {n}.": "Time to weigh in: {n} have passed since the last weigh-in.",
+    "Запишите вес тела, чтобы видеть, как он меняется.": "Log your body weight to see how it changes.",
+    "Записать вес": "Log weight",
+    "Синий": "Blue",
+    "Фиолетовый": "Violet",
+    "Зелёный": "Green",
+    "Оранжевый": "Orange",
+    "Розовый": "Pink",
+    "Графит": "Graphite",
+    "Язык": "Language",
+    "Оформление": "Appearance",
+    "Тема": "Theme",
+    "Авто": "Auto",
+    "Светлая": "Light",
+    "Тёмная": "Dark",
+    "Цвет акцента": "Accent color",
+    "Профиль": "Profile",
+    "Рост, см": "Height, cm",
+    "Вес тела": "Body weight",
+    "Записать": "Log",
+    "Укажите рост, и рядом с весом тела появится индекс массы тела (ИМТ).": "Enter your height and the body mass index (BMI) will appear next to your body weight.",
+    "Напоминания": "Reminders",
+    "Напоминать о взвешивании раз в неделю": "Remind me to weigh in once a week",
+    "Напоминание появляется на экране «Тренировка», когда с прошлого взвешивания прошло 7 дней.": "The reminder appears on the Workout screen when 7 days have passed since the last weigh-in.",
+    "Настройки сохраняются сами и попадают в резервную копию.": "Settings save automatically and are included in the backup.",
+    "Введите рост от 100 до 250 см.": "Enter a height from 100 to 250 cm."
+    };
+  var ACCENTS = ['blue', 'violet', 'green', 'orange', 'pink', 'graphite'];
+  var PKEY = 'podhody:prefs';
+  function cleanPrefs(p) {
+    p = p || {};
+    var h = parseFloat(p.height);
+    return {
+      lang: p.lang === 'en' ? 'en' : 'ru',
+      theme: ['auto', 'light', 'dark'].indexOf(p.theme) >= 0 ? p.theme : 'auto',
+      accent: ACCENTS.indexOf(p.accent) >= 0 ? p.accent : 'blue',
+      height: isFinite(h) && h >= 100 && h <= 250 ? Math.round(h) : null,
+      remind: p.remind !== false
+    };
+  }
+  function cachedPrefs() { try { var s = localStorage.getItem(PKEY); return s ? JSON.parse(s) : null; } catch (e) { return null; } }
+  function cachePrefs() { try { localStorage.setItem(PKEY, JSON.stringify(PREFS)); } catch (e) { /* хранилище недоступно */ } }
+  var PREFS = cleanPrefs(cachedPrefs());
+  function L(s) { return PREFS.lang === 'en' && EN[s] != null ? EN[s] : s; }
+  function loc() { return PREFS.lang === 'en' ? 'en-GB' : 'ru-RU'; }
+  function applyStatic() {
+    document.documentElement.lang = PREFS.lang;
+    document.title = L('Дневник подходов');
+    [].forEach.call(document.querySelectorAll('[data-i18n]'), function (el) { el.textContent = L(el.getAttribute('data-i18n')); });
+    [].forEach.call(document.querySelectorAll('[data-i18n-aria]'), function (el) { el.setAttribute('aria-label', L(el.getAttribute('data-i18n-aria'))); });
+  }
+
   var MAXV = 4096, MAXDAYS = 5, MAXSETS = 6;
-  var TYPES = {
-    w: { name: 'Вес × повторы', c1: 'кг', c2: 'повторы', warm: true, sugg: true },
-    bw: { name: 'Свой вес', c1: 'доп. кг', c2: 'повторы', warm: false, sugg: true },
-    time: { name: 'На время', c1: 'доп. кг', c2: 'секунды', warm: false, sugg: false },
-    cardio: { name: 'Кардио', c1: 'км', c2: 'минуты', warm: false, sugg: false }
+  var FEEL, TYPES, GROUPS, GNAME, UNIT, TEMPLATES;
+  function initConsts() {
+  FEEL = { 1: L('Легко'), 2: L('Нормально'), 3: L('На пределе') };
+  TYPES = {
+    w: { name: L('Вес × повторы'), c1: L('кг'), c2: L('повторы'), warm: true, sugg: true },
+    bw: { name: L('Свой вес'), c1: L('доп. кг'), c2: L('повторы'), warm: false, sugg: true },
+    time: { name: L('На время'), c1: L('доп. кг'), c2: L('секунды'), warm: false, sugg: false },
+    cardio: { name: L('Кардио'), c1: L('км'), c2: L('минуты'), warm: false, sugg: false }
   };
-  var GROUPS = [['chest', 'Грудь'], ['back', 'Спина'], ['shoulders', 'Плечи'], ['biceps', 'Бицепс'], ['triceps', 'Трицепс'],
-    ['quads', 'Квадрицепс'], ['hams', 'Бицепс бедра'], ['glutes', 'Ягодицы'], ['calves', 'Икры'], ['abs', 'Пресс'], ['cardio', 'Кардио'], ['other', 'Другое']];
-  var GNAME = {};
+  GROUPS = [['chest', L('Грудь')], ['back', L('Спина')], ['shoulders', L('Плечи')], ['biceps', L('Бицепс')], ['triceps', L('Трицепс')],
+    ['quads', L('Квадрицепс')], ['hams', L('Бицепс бедра')], ['glutes', L('Ягодицы')], ['calves', L('Икры')], ['abs', L('Пресс')], ['cardio', L('Кардио')], ['other', L('Другое')]];
+  GNAME = {};
   GROUPS.forEach(function (g) { GNAME[g[0]] = g[1]; });
+  UNIT = { kg: L('кг'), reps: L('повт.'), sec: L('сек'), km: L('км'), min: L('мин') };
+  initTemplates();
+  }
   var DEF_GROUP = {
     d1_hack: 'quads', d1_bench: 'chest', d1_lat: 'back', d1_legcurl: 'hams', d1_shoulder: 'shoulders', d1_curl: 'biceps', d1_tri: 'triceps',
     d2_legpress: 'quads', d2_incline: 'chest', d2_row: 'back', d2_legext: 'quads', d2_lateral: 'shoulders', d2_bicep: 'biceps', d2_tri: 'triceps',
@@ -355,7 +816,6 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     l_legext: 'quads', l_hip: 'glutes'
   };
   var DEF_BAR = { d1_bench: 1, d2_bicep: 1, f3_squat: 1, f3_bench: 1, f3_rdl: 1, f3_curl: 1, u_bench: 1, u_bbrow: 1, l_squat: 1, l_rdl: 1, l_hip: 1 };
-  var UNIT = { kg: 'кг', reps: 'повт.', sec: 'сек', km: 'км', min: 'мин' };
 
   /* ---------- Телеграм ---------- */
   var tg = window.Telegram && window.Telegram.WebApp;
@@ -364,8 +824,12 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   var useCloud = !!(inTg && tg.CloudStorage && tgAtLeast('6.9'));
   function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
   function applyTheme() {
+    var root = document.documentElement;
+    if (PREFS.theme !== 'auto') root.setAttribute('data-theme', PREFS.theme);
+    else if (inTg) root.setAttribute('data-theme', tg.colorScheme === 'dark' ? 'dark' : 'light');
+    else root.removeAttribute('data-theme');
+    if (PREFS.accent === 'blue') root.removeAttribute('data-accent'); else root.setAttribute('data-accent', PREFS.accent);
     if (!inTg) return;
-    document.documentElement.setAttribute('data-theme', tg.colorScheme === 'dark' ? 'dark' : 'light');
     var bg = cssVar('--bg'), sf = cssVar('--surface');
     try { if (tgAtLeast('6.9')) tg.setHeaderColor(bg); else tg.setHeaderColor('bg_color'); } catch (e) { /* старая версия */ }
     try { if (tgAtLeast('6.1')) tg.setBackgroundColor(bg); } catch (e) { /* старая версия */ }
@@ -487,7 +951,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     var st = parseFloat(e.start);
     return {
       id: id,
-      name: String(e.name || 'Упражнение').slice(0, 80),
+      name: String(e.name || L('Упражнение')).slice(0, 80),
       type: type,
       group: GNAME[e.group] ? e.group : (DEF_GROUP[id] || (type === 'cardio' ? 'cardio' : '')),
       bar: type === 'w' && (e.bar === undefined ? !!DEF_BAR[id] : !!e.bar),
@@ -506,53 +970,56 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     o = o || {};
     return { id: id, name: name, lo: lo, hi: hi, dumbbell: !!o.db, step: o.step, rest: o.rest, sets: o.sets };
   }
-  var TEMPLATES = [
-    { k: 'fb2', name: 'Фулбади, 2 дня', desc: 'Всё тело за тренировку, два дня чередуются. Хороший старт для новичка.', plan: function () { return { days: [
-      { id: 1, name: 'Фулбади 1', ex: [
-        E('d1_hack', 'Гакк-присед', 8, 12), E('d1_bench', 'Жим штанги лёжа', 8, 12), E('d1_lat', 'Тяга верхнего блока', 8, 12),
-        E('d1_legcurl', 'Сгибание ног в тренажёре', 8, 12, { rest: 90 }), E('d1_shoulder', 'Жим гантелей сидя', 8, 12, { db: 1 }),
-        E('d1_curl', 'Сгибание рук с гантелями', 8, 12, { db: 1, rest: 90 }), E('d1_tri', 'Разгибание рук на блоке (трицепс)', 8, 12, { rest: 90 })
+  function initTemplates() {
+  TEMPLATES = [
+    { k: 'fb2', name: L('Фулбади, 2 дня'), desc: L('Всё тело за тренировку, два дня чередуются. Хороший старт для новичка.'), plan: function () { return { days: [
+      { id: 1, name: L('Фулбади 1'), ex: [
+        E('d1_hack', L('Гакк-присед'), 8, 12), E('d1_bench', L('Жим штанги лёжа'), 8, 12), E('d1_lat', L('Тяга верхнего блока'), 8, 12),
+        E('d1_legcurl', L('Сгибание ног в тренажёре'), 8, 12, { rest: 90 }), E('d1_shoulder', L('Жим гантелей сидя'), 8, 12, { db: 1 }),
+        E('d1_curl', L('Сгибание рук с гантелями'), 8, 12, { db: 1, rest: 90 }), E('d1_tri', L('Разгибание рук на блоке (трицепс)'), 8, 12, { rest: 90 })
       ] },
-      { id: 2, name: 'Фулбади 2', ex: [
-        E('d2_legpress', 'Жим ногами', 8, 12), E('d2_incline', 'Жим гантелей на наклонной скамье', 8, 12, { db: 1 }), E('d2_row', 'Тяга горизонтального блока', 8, 12),
-        E('d2_legext', 'Разгибание ног в тренажёре', 8, 12, { rest: 90 }), E('d2_lateral', 'Махи гантелями в стороны', 10, 15, { db: 1, step: 1, rest: 90 }),
-        E('d2_bicep', 'Подъём штанги на бицепс', 8, 12, { rest: 90 }), E('d2_tri', 'Разгибание рук на блоке (трицепс)', 8, 12, { rest: 90 })
+      { id: 2, name: L('Фулбади 2'), ex: [
+        E('d2_legpress', L('Жим ногами'), 8, 12), E('d2_incline', L('Жим гантелей на наклонной скамье'), 8, 12, { db: 1 }), E('d2_row', L('Тяга горизонтального блока'), 8, 12),
+        E('d2_legext', L('Разгибание ног в тренажёре'), 8, 12, { rest: 90 }), E('d2_lateral', L('Махи гантелями в стороны'), 10, 15, { db: 1, step: 1, rest: 90 }),
+        E('d2_bicep', L('Подъём штанги на бицепс'), 8, 12, { rest: 90 }), E('d2_tri', L('Разгибание рук на блоке (трицепс)'), 8, 12, { rest: 90 })
       ] }
     ] }; } },
-    { k: 'fb3', name: 'Фулбади, 3 дня', desc: 'Три разные тренировки на всё тело, например понедельник, среда, пятница.', plan: function () { return { days: [
-      { id: 1, name: 'Фулбади А', ex: [
-        E('f3_squat', 'Приседания со штангой', 6, 10, { rest: 180 }), E('f3_bench', 'Жим штанги лёжа', 6, 10, { rest: 180 }), E('f3_lat', 'Тяга верхнего блока', 8, 12),
-        E('f3_legcurl', 'Сгибание ног в тренажёре', 10, 15, { rest: 90 }), E('f3_lateral', 'Махи гантелями в стороны', 10, 15, { db: 1, step: 1, rest: 90 })
+    { k: 'fb3', name: L('Фулбади, 3 дня'), desc: L('Три разные тренировки на всё тело, например понедельник, среда, пятница.'), plan: function () { return { days: [
+      { id: 1, name: L('Фулбади А'), ex: [
+        E('f3_squat', L('Приседания со штангой'), 6, 10, { rest: 180 }), E('f3_bench', L('Жим штанги лёжа'), 6, 10, { rest: 180 }), E('f3_lat', L('Тяга верхнего блока'), 8, 12),
+        E('f3_legcurl', L('Сгибание ног в тренажёре'), 10, 15, { rest: 90 }), E('f3_lateral', L('Махи гантелями в стороны'), 10, 15, { db: 1, step: 1, rest: 90 })
       ] },
-      { id: 2, name: 'Фулбади Б', ex: [
-        E('f3_legpress', 'Жим ногами', 8, 12), E('f3_dbpress', 'Жим гантелей сидя', 8, 12, { db: 1 }), E('f3_row', 'Тяга горизонтального блока', 8, 12),
-        E('f3_legext', 'Разгибание ног в тренажёре', 10, 15, { rest: 90 }), E('f3_tri', 'Разгибание рук на блоке (трицепс)', 10, 15, { rest: 90 })
+      { id: 2, name: L('Фулбади Б'), ex: [
+        E('f3_legpress', L('Жим ногами'), 8, 12), E('f3_dbpress', L('Жим гантелей сидя'), 8, 12, { db: 1 }), E('f3_row', L('Тяга горизонтального блока'), 8, 12),
+        E('f3_legext', L('Разгибание ног в тренажёре'), 10, 15, { rest: 90 }), E('f3_tri', L('Разгибание рук на блоке (трицепс)'), 10, 15, { rest: 90 })
       ] },
-      { id: 3, name: 'Фулбади В', ex: [
-        E('f3_rdl', 'Румынская тяга со штангой', 8, 10), E('f3_incline', 'Жим гантелей на наклонной скамье', 8, 12, { db: 1 }), E('f3_dbrow', 'Тяга гантели в наклоне', 8, 12, { db: 1 }),
-        E('f3_lunge', 'Выпады с гантелями', 8, 12, { db: 1, rest: 90 }), E('f3_curl', 'Подъём штанги на бицепс', 10, 12, { rest: 90 })
+      { id: 3, name: L('Фулбади В'), ex: [
+        E('f3_rdl', L('Румынская тяга со штангой'), 8, 10), E('f3_incline', L('Жим гантелей на наклонной скамье'), 8, 12, { db: 1 }), E('f3_dbrow', L('Тяга гантели в наклоне'), 8, 12, { db: 1 }),
+        E('f3_lunge', L('Выпады с гантелями'), 8, 12, { db: 1, rest: 90 }), E('f3_curl', L('Подъём штанги на бицепс'), 10, 12, { rest: 90 })
       ] }
     ] }; } },
-    { k: 'ul4', name: 'Верх / низ, 4 дня', desc: 'Два дня на верх тела и два на ноги. Для тех, кто ходит четыре раза в неделю.', plan: function () { return { days: [
-      { id: 1, name: 'Верх А', ex: [
-        E('u_bench', 'Жим штанги лёжа', 6, 10, { rest: 180 }), E('u_bbrow', 'Тяга штанги в наклоне', 6, 10), E('u_dbpress', 'Жим гантелей сидя', 8, 12, { db: 1 }),
-        E('u_lat', 'Тяга верхнего блока', 8, 12), E('u_curl', 'Сгибание рук с гантелями', 10, 12, { db: 1, rest: 90 })
+    { k: 'ul4', name: L('Верх / низ, 4 дня'), desc: L('Два дня на верх тела и два на ноги. Для тех, кто ходит четыре раза в неделю.'), plan: function () { return { days: [
+      { id: 1, name: L('Верх А'), ex: [
+        E('u_bench', L('Жим штанги лёжа'), 6, 10, { rest: 180 }), E('u_bbrow', L('Тяга штанги в наклоне'), 6, 10), E('u_dbpress', L('Жим гантелей сидя'), 8, 12, { db: 1 }),
+        E('u_lat', L('Тяга верхнего блока'), 8, 12), E('u_curl', L('Сгибание рук с гантелями'), 10, 12, { db: 1, rest: 90 })
       ] },
-      { id: 2, name: 'Низ А', ex: [
-        E('l_squat', 'Приседания со штангой', 6, 10, { rest: 180 }), E('l_rdl', 'Румынская тяга со штангой', 8, 10), E('l_legcurl', 'Сгибание ног в тренажёре', 10, 15, { rest: 90 }),
-        E('l_calf', 'Подъём на носки стоя', 12, 15, { rest: 60 })
+      { id: 2, name: L('Низ А'), ex: [
+        E('l_squat', L('Приседания со штангой'), 6, 10, { rest: 180 }), E('l_rdl', L('Румынская тяга со штангой'), 8, 10), E('l_legcurl', L('Сгибание ног в тренажёре'), 10, 15, { rest: 90 }),
+        E('l_calf', L('Подъём на носки стоя'), 12, 15, { rest: 60 })
       ] },
-      { id: 3, name: 'Верх Б', ex: [
-        E('u_incline', 'Жим гантелей на наклонной скамье', 8, 12, { db: 1 }), E('u_row', 'Тяга горизонтального блока', 8, 12), E('u_lateral', 'Махи гантелями в стороны', 12, 15, { db: 1, step: 1, rest: 60 }),
-        E('u_tri', 'Разгибание рук на блоке (трицепс)', 10, 15, { rest: 90 }), E('u_hammer', 'Молотки с гантелями', 10, 12, { db: 1, rest: 90 })
+      { id: 3, name: L('Верх Б'), ex: [
+        E('u_incline', L('Жим гантелей на наклонной скамье'), 8, 12, { db: 1 }), E('u_row', L('Тяга горизонтального блока'), 8, 12), E('u_lateral', L('Махи гантелями в стороны'), 12, 15, { db: 1, step: 1, rest: 60 }),
+        E('u_tri', L('Разгибание рук на блоке (трицепс)'), 10, 15, { rest: 90 }), E('u_hammer', L('Молотки с гантелями'), 10, 12, { db: 1, rest: 90 })
       ] },
-      { id: 4, name: 'Низ Б', ex: [
-        E('l_legpress', 'Жим ногами', 10, 15), E('l_lunge', 'Выпады с гантелями', 8, 12, { db: 1, rest: 90 }), E('l_legext', 'Разгибание ног в тренажёре', 12, 15, { rest: 90 }),
-        E('l_hip', 'Ягодичный мост со штангой', 8, 12)
+      { id: 4, name: L('Низ Б'), ex: [
+        E('l_legpress', L('Жим ногами'), 10, 15), E('l_lunge', L('Выпады с гантелями'), 8, 12, { db: 1, rest: 90 }), E('l_legext', L('Разгибание ног в тренажёре'), 12, 15, { rest: 90 }),
+        E('l_hip', L('Ягодичный мост со штангой'), 8, 12)
       ] }
     ] }; } },
-    { k: 'empty', name: 'Пустой план', desc: 'Один пустой день. Упражнения и дни добавите сами на вкладке «План».', plan: function () { return { days: [{ id: 1, name: 'День 1', ex: [] }] }; } }
+    { k: 'empty', name: L('Пустой план'), desc: L('Один пустой день. Упражнения и дни добавите сами на вкладке «План».'), plan: function () { return { days: [{ id: 1, name: L('День 1'), ex: [] }] }; } }
   ];
+  }
+  initConsts();
   function parsePlates(v) {
     var arr = Array.isArray(v) ? v : String(v || '').split(/[\s;]+/);
     var out = [];
@@ -570,7 +1037,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
       var id = Math.round(+d.id);
       if (!(id >= 1 && id <= 999) || used[id]) return;
       used[id] = 1;
-      var day = { id: id, name: String(d.name || ('Фулбади ' + id)).trim().slice(0, 30) || ('День ' + id), ex: [] };
+      var day = { id: id, name: String(d.name || (L('Фулбади ') + id)).trim().slice(0, 30) || (L('День ') + id), ex: [] };
       (Array.isArray(d.ex) ? d.ex : []).forEach(function (e) {
         var x = fixEx(e, id);
         x.day = id;
@@ -614,10 +1081,10 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   function dayIndex(id) { for (var i = 0; i < PLAN.days.length; i++) if (PLAN.days[i].id === id) return i; return -1; }
   function dayById(id) {
     var i = dayIndex(id);
-    return i >= 0 ? PLAN.days[i] : { id: id, name: PLAN.oldDays[id] || ('День ' + id), ex: [], gone: true };
+    return i >= 0 ? PLAN.days[i] : { id: id, name: PLAN.oldDays[id] || (L('День ') + id), ex: [], gone: true };
   }
-  function dayTag(id) { var i = dayIndex(id); return i >= 0 ? 'Д' + (i + 1) : '–'; }
-  function exName(id) { return BYID[id] ? BYID[id].name : 'Упражнение'; }
+  function dayTag(id) { var i = dayIndex(id); return i >= 0 ? L('Д') + (i + 1) : '–'; }
+  function exName(id) { return BYID[id] ? BYID[id].name : L('Упражнение'); }
   function inArchive(id) { return PLAN.archive.some(function (e) { return e.id === id; }); }
   function maxDayId() {
     var m = 0;
@@ -643,7 +1110,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   var swapOpen = null;
   var mode = 'pending';
   var dirty = false, userChose = false;
-  var pend = { sess: false, plan: false, body: false };
+  var pend = { sess: false, plan: false, body: false, prefs: false };
   var timers = {};
   var noteDirty = {}, bodyYears = {}, storedDays = {};
   var chain = Promise.resolve();
@@ -665,16 +1132,16 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   function curId() { return cur.date + '_d' + cur.day; }
   function r2(n) { return Math.round(n * 100) / 100; }
   function roundTo(x, s) { return r2(Math.round(x / s) * s); }
-  function fmt(n) { return n == null ? '' : String(r2(n)).replace('.', ','); }
-  function nf(n) { return Math.round(n).toLocaleString('ru-RU'); }
+  function fmt(n) { return n == null ? '' : PREFS.lang === 'en' ? String(r2(n)) : String(r2(n)).replace('.', ','); }
+  function nf(n) { return Math.round(n).toLocaleString(loc()); }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function parseNum(s) { var v = parseFloat(String(s).replace(',', '.')); return isFinite(v) && v >= 0 ? v : null; }
   function shortDate(s) { return s.slice(8, 10) + '.' + s.slice(5, 7); }
-  function longDate(s) { return dt(s).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' }); }
-  function chipDate(s) { return dt(s).toLocaleDateString('ru-RU', { weekday: 'short', day: 'numeric', month: 'long' }); }
+  function longDate(s) { return dt(s).toLocaleDateString(loc(), { day: 'numeric', month: 'long' }); }
+  function chipDate(s) { return dt(s).toLocaleDateString(loc(), { weekday: 'short', day: 'numeric', month: 'long' }); }
   function isDate(s) { return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s); }
-  function plural(n, a, b, c) { var m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : (m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c); }
-  function durText(ms) { var m = Math.max(1, Math.round(ms / 60000)); return m < 60 ? m + ' мин' : Math.floor(m / 60) + ' ч ' + pad(m % 60) + ' мин'; }
+  function plural(n, a, b, c) { if (PREFS.lang === 'en') return n === 1 ? a : c; var m = n % 10, h = n % 100; return m === 1 && h !== 11 ? a : (m >= 2 && m <= 4 && (h < 12 || h > 14) ? b : c); }
+  function durText(ms) { var m = Math.max(1, Math.round(ms / 60000)); return m < 60 ? m + L(' мин') : Math.floor(m / 60) + L(' ч ') + pad(m % 60) + L(' мин'); }
   function clock(ms) { var s = Math.max(0, Math.floor(ms / 1000)), h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return (h ? h + ':' + pad(m) : m) + ':' + pad(s % 60); }
   function cell0() { return { kg: null, reps: null }; }
   function blank(n) { var s = []; for (var i = 0; i < (n || 3); i++) s.push(cell0()); return { w: cell0(), s: s, feel: null }; }
@@ -722,21 +1189,21 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   }
   function valText(v, mode, ex) {
     if (v == null) return '–';
-    if (mode === 'kg' && ex && ex.type === 'bw') return v > 0 ? '+' + fmt(v) + ' кг' : 'свой вес';
+    if (mode === 'kg' && ex && ex.type === 'bw') return v > 0 ? '+' + fmt(v) + L(' кг') : L('свой вес');
     return fmt(v) + ' ' + UNIT[mode];
   }
   function cellText(c, ex) {
     if (!c || !filled(c)) return '';
     var t = ex ? ex.type : 'w';
-    if (t === 'cardio') return [c.kg != null ? fmt(c.kg) + ' км' : '', c.reps != null ? fmt(c.reps) + ' мин' : ''].filter(Boolean).join(' · ');
-    if (t === 'time') return (c.kg ? '+' + fmt(c.kg) + ' кг · ' : '') + (c.reps == null ? '?' : fmt(c.reps)) + ' с';
+    if (t === 'cardio') return [c.kg != null ? fmt(c.kg) + L(' км') : '', c.reps != null ? fmt(c.reps) + L(' мин') : ''].filter(Boolean).join(' · ');
+    if (t === 'time') return (c.kg ? '+' + fmt(c.kg) + L(' кг · ') : '') + (c.reps == null ? '?' : fmt(c.reps)) + L(' с');
     if (t === 'bw') return (c.kg ? '+' + fmt(c.kg) + '×' : '') + (c.reps == null ? '?' : fmt(c.reps));
     return (c.kg == null ? '?' : fmt(c.kg)) + '×' + (c.reps == null ? '?' : fmt(c.reps));
   }
   function chipsHtml(e, ex, withFeel) {
     e = norm(e);
     var out = '';
-    if (filled(e.w)) out += '<span class="c w" title="Разминка">р ' + cellText(e.w, ex) + '</span>';
+    if (filled(e.w)) out += L('<span class="c w" title="Разминка">р ') + cellText(e.w, ex) + '</span>';
     e.s.forEach(function (c) { if (filled(c)) out += '<span class="c">' + cellText(c, ex) + '</span>'; });
     if (withFeel && e.feel) out += '<span class="c f">' + FEEL[e.feel].toLowerCase() + '</span>';
     return out;
@@ -744,12 +1211,12 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   function platesText(total) {
     if (total == null) return '';
     var bar = PLAN.barKg;
-    if (total < bar) return 'Меньше веса грифа (' + fmt(bar) + ' кг).';
+    if (total < bar) return L('Меньше веса грифа (') + fmt(bar) + L(' кг).');
     var side = r2((total - bar) / 2);
-    if (side === 0) return 'Только гриф.';
+    if (side === 0) return L('Только гриф.');
     var out = [], rest = side;
     PLAN.plates.forEach(function (p) { while (rest >= p - 1e-9) { out.push(p); rest = r2(rest - p); } });
-    return 'На каждую сторону: ' + (out.length ? out.map(fmt).join(' + ') : '—') + (rest > 0.001 ? ' (не хватает ' + fmt(rest) + ' кг)' : '') + '.';
+    return L('На каждую сторону: ') + (out.length ? out.map(fmt).join(' + ') : '—') + (rest > 0.001 ? L(' (не хватает ') + fmt(rest) + L(' кг)') : '') + '.';
   }
 
   /* ---------- компактная запись тренировки ---------- */
@@ -849,33 +1316,33 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     if (!TYPES[ex.type].sugg) return null;
     var range = ex.lo + '–' + ex.hi, prev = list.length ? list[list.length - 1] : null;
     if (!prev) {
-      return ex.start ? { kind: 'start', tag: 'Стартовый вес', kg: ex.start, reps: ex.lo, why: 'Цель: ' + ex.sets + ' ' + plural(ex.sets, 'подход', 'подхода', 'подходов') + ' по ' + range + ' повторов.' } : null;
+      return ex.start ? { kind: 'start', tag: L('Стартовый вес'), kg: ex.start, reps: ex.lo, why: L('Цель: ') + ex.sets + ' ' + plural(ex.sets, L('подход'), L('подхода'), L('подходов')) + L(' по ') + range + L(' повторов.') } : null;
     }
     var info = setInfo(prev.entry, ex);
     if (!info) return null;
     var W = info.W;
     if (info.full && prev.entry.feel !== 3) {
-      return { kind: 'up', tag: 'Повысьте вес', kg: r2(W + ex.step), reps: ex.lo, why: 'В прошлый раз во всех рабочих подходах ' + ex.hi + ' повторов и больше, это верх диапазона ' + range + '.' };
+      return { kind: 'up', tag: L('Повысьте вес'), kg: r2(W + ex.step), reps: ex.lo, why: L('В прошлый раз во всех рабочих подходах ') + ex.hi + L(' повторов и больше, это верх диапазона ') + range + '.' };
     }
-    if (info.full) return { kind: 'hold', tag: 'Тот же вес', kg: W, reps: ex.hi, why: 'Повторы набраны, но вы отметили «на пределе». Закрепите этот вес ещё раз.' };
+    if (info.full) return { kind: 'hold', tag: L('Тот же вес'), kg: W, reps: ex.hi, why: L('Повторы набраны, но вы отметили «на пределе». Закрепите этот вес ещё раз.') };
     var earlier = list.slice(-5, -1).map(function (p) { return setInfo(p.entry, ex); }).filter(Boolean);
     var recentMax = earlier.reduce(function (m, i) { return Math.max(m, i.W); }, 0);
     if (recentMax > W && earlier.length && setInfo(list[list.length - 2] ? list[list.length - 2].entry : null, ex) && earlier[earlier.length - 1].W > W) {
-      return { kind: 'up', tag: 'Возвращайтесь', kg: recentMax, reps: ex.lo, why: 'После облегчённой тренировки вернитесь к рабочему весу ' + fmt(recentMax) + ' кг.' };
+      return { kind: 'up', tag: L('Возвращайтесь'), kg: recentMax, reps: ex.lo, why: L('После облегчённой тренировки вернитесь к рабочему весу ') + fmt(recentMax) + L(' кг.') };
     }
     if (W > 0 && list.length >= 3) {
       var last3 = list.slice(-3).map(function (p) { return setInfo(p.entry, ex); });
       if (last3.every(function (i) { return i && i.W === W && !i.full; })) {
         var dl = roundTo(W * 0.9, ex.step);
-        if (dl < W) return { kind: 'deload', tag: 'Разгрузка', kg: dl, reps: ex.hi, why: 'Вес ' + fmt(W) + ' кг держится три тренировки подряд. Сделайте одну тренировку с ' + fmt(dl) + ' кг на верх диапазона, а в следующий раз вернитесь к ' + fmt(W) + ' кг.' };
+        if (dl < W) return { kind: 'deload', tag: L('Разгрузка'), kg: dl, reps: ex.hi, why: L('Вес ') + fmt(W) + L(' кг держится три тренировки подряд. Сделайте одну тренировку с ') + fmt(dl) + L(' кг на верх диапазона, а в следующий раз вернитесь к ') + fmt(W) + L(' кг.') };
       }
     }
-    if (info.minR < ex.lo) return { kind: 'hold', tag: 'Тот же вес', kg: W, reps: ex.lo, why: 'Цель: хотя бы ' + ex.lo + ' повторов в каждом подходе.' };
-    return { kind: 'hold', tag: 'Тот же вес', kg: W, reps: Math.min(ex.hi, info.minR + 1), why: 'Добавляйте по повтору. Когда во всех подходах будет ' + ex.hi + ', вес вырастет на ' + fmt(ex.step) + ' кг.' };
+    if (info.minR < ex.lo) return { kind: 'hold', tag: L('Тот же вес'), kg: W, reps: ex.lo, why: L('Цель: хотя бы ') + ex.lo + L(' повторов в каждом подходе.') };
+    return { kind: 'hold', tag: L('Тот же вес'), kg: W, reps: Math.min(ex.hi, info.minR + 1), why: L('Добавляйте по повтору. Когда во всех подходах будет ') + ex.hi + L(', вес вырастет на ') + fmt(ex.step) + L(' кг.') };
   }
   function sgText(sg, ex) {
-    if (ex.type === 'bw') return (sg.kg > 0 ? '+' + fmt(sg.kg) + ' кг' : 'Свой вес') + ' × ' + sg.reps;
-    return fmt(sg.kg) + ' кг × ' + sg.reps;
+    if (ex.type === 'bw') return (sg.kg > 0 ? '+' + fmt(sg.kg) + L(' кг') : L('Свой вес')) + ' × ' + sg.reps;
+    return fmt(sg.kg) + L(' кг × ') + sg.reps;
   }
 
   /* ---------- черновик текущей тренировки ---------- */
@@ -909,14 +1376,14 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   }
 
   /* ---------- сохранение ---------- */
-  function anyPending() { return pend.sess || pend.plan || pend.body; }
+  function anyPending() { return pend.sess || pend.plan || pend.body || pend.prefs; }
   function setStatus(kind, text) {
     $status.className = '';
-    if (kind === 'connecting') $status.textContent = 'Загружаю…';
-    else if (kind === 'saving') $status.textContent = 'Сохраняю…';
-    else if (kind === 'error') { $status.textContent = text || 'Не удалось сохранить'; $status.className = 'err'; }
-    else if (mode === 'tg' && queued()) { $status.textContent = 'Сохранено на телефоне'; $status.className = 'err'; }
-    else $status.textContent = mode === 'tg' ? 'Сохранено' : mode === 'local' ? 'Сохранено в браузере' : mode === 'memory' ? 'Не сохраняется' : 'Загружаю…';
+    if (kind === 'connecting') $status.textContent = L('Загружаю…');
+    else if (kind === 'saving') $status.textContent = L('Сохраняю…');
+    else if (kind === 'error') { $status.textContent = text || L('Не удалось сохранить'); $status.className = 'err'; }
+    else if (mode === 'tg' && queued()) { $status.textContent = L('Сохранено на телефоне'); $status.className = 'err'; }
+    else $status.textContent = mode === 'tg' ? L('Сохранено') : mode === 'local' ? L('Сохранено в браузере') : mode === 'memory' ? L('Не сохраняется') : L('Загружаю…');
   }
   function syncState() {
     if (anyPending()) return;
@@ -968,7 +1435,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
       .then(function () { syncState(); })
       .catch(function (err) {
         console.error(err);
-        setStatus('error', err && err.tooBig ? 'Слишком большая запись, не сохранено' : 'Не удалось сохранить');
+        setStatus('error', err && err.tooBig ? L('Слишком большая запись, не сохранено') : L('Не удалось сохранить'));
       });
   }
   function flush(kind) {
@@ -984,20 +1451,30 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
       if (doc) S[id] = doc; else delete S[id];
       job = function () { return kvPut('s_' + id, doc ? enc(doc) : null); };
     } else if (kind === 'plan') job = planJob();
+    else if (kind === 'prefs') { var pj = JSON.stringify(PREFS); job = function () { return kvPut('cfg_prefs', pj); }; }
     else job = bodyJob();
     runJob(job);
   }
-  function flushAll() { ['sess', 'plan', 'body'].forEach(flush); }
+  function flushAll() { ['sess', 'plan', 'body', 'prefs'].forEach(flush); }
+  function savePrefs() { cachePrefs(); scheduleSave('prefs'); }
+  function setLang(lang) {
+    if (PREFS.lang === lang) return;
+    PREFS.lang = lang;
+    initConsts();
+    applyStatic();
+    showNote();
+    setStatus(anyPending() ? 'saving' : 'saved');
+  }
   var noteT = null, noteOk = '';
   function showNote(okText) {
     var t = '', ok = false;
     if (okText) { noteOk = okText; clearTimeout(noteT); noteT = setTimeout(function () { noteOk = ''; showNote(); }, 6000); }
     if (noteOk) { t = noteOk; ok = true; }
-    else if (mode === 'failed') t = 'Не удалось загрузить данные из Телеграма. Проверьте интернет, закройте приложение и откройте снова.';
-    else if (mode === 'tg' && (offline || queued())) t = 'Нет связи. Записи сохраняются на телефоне и отправятся в облако Телеграма, когда появится интернет.';
-    else if (mode === 'memory') t = 'Браузер блокирует хранилище, записи пропадут после закрытия страницы.';
-    else if (mode === 'local' && inTg) t = 'Эта версия Телеграма не умеет хранить данные в облаке, записи лежат только на этом устройстве. Обновите Телеграм.';
-    else if (mode === 'local') t = 'Страница открыта не в Телеграме, поэтому записи хранятся только в этом браузере.';
+    else if (mode === 'failed') t = L('Не удалось загрузить данные из Телеграма. Проверьте интернет, закройте приложение и откройте снова.');
+    else if (mode === 'tg' && (offline || queued())) t = L('Нет связи. Записи сохраняются на телефоне и отправятся в облако Телеграма, когда появится интернет.');
+    else if (mode === 'memory') t = L('Браузер блокирует хранилище, записи пропадут после закрытия страницы.');
+    else if (mode === 'local' && inTg) t = L('Эта версия Телеграма не умеет хранить данные в облаке, записи лежат только на этом устройстве. Обновите Телеграм.');
+    else if (mode === 'local') t = L('Страница открыта не в Телеграме, поэтому записи хранятся только в этом браузере.');
     $note.textContent = t;
     $note.className = 'note' + (ok ? ' ok' : '');
     $note.hidden = !t;
@@ -1005,18 +1482,27 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
 
   /* ---------- загрузка ---------- */
   function parseValues(v) {
-    var next = {}, cfg = null, rawDays = {}, notes = {}, body = [];
+    var next = {}, cfg = null, rawDays = {}, notes = {}, body = [], prefs = null;
     Object.keys(v).forEach(function (k) {
       var s = v[k];
       if (s == null || s === '') return;
       try {
         if (k.indexOf('s_') === 0) { var d = dec(s); if (isDate(d.date)) next[k.slice(2)] = d; }
         else if (k === 'cfg_plan') cfg = JSON.parse(s);
+        else if (k === 'cfg_prefs') prefs = JSON.parse(s);
         else if (/^cfg_day\d+$/.test(k)) rawDays[+k.slice(7)] = JSON.parse(s);
         else if (k.indexOf('n_') === 0) notes[k.slice(2)] = s;
         else if (k.indexOf('b_') === 0) JSON.parse(s).forEach(function (a) { if (a && isDate(a[0]) && isFinite(+a[1])) body.push({ date: a[0], kg: +a[1] }); });
-      } catch (e) { console.warn('Пропущена запись', k); }
+      } catch (e) { console.warn(L('Пропущена запись'), k); }
     });
+    if (prefs) {
+      var np = cleanPrefs(prefs), lang = np.lang;
+      np.lang = PREFS.lang;
+      PREFS = np;
+      setLang(lang);
+      cachePrefs();
+      applyTheme();
+    }
     S = next;
     storedDays = {};
     Object.keys(rawDays).forEach(function (id) { storedDays[id] = 1; });
@@ -1076,12 +1562,14 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     if (inTg) {
       try { tg.ready(); tg.expand(); } catch (e) { /* старая версия */ }
       try { if (tgAtLeast('7.7')) tg.disableVerticalSwipes(); } catch (e) { /* старая версия */ }
-      applyTheme();
       try { tg.onEvent('themeChanged', applyTheme); } catch (e) { /* старая версия */ }
     }
-    $view.innerHTML = '<section class="card"><p class="empty">Загружаю ваши записи…</p></section>';
+    applyTheme();
+    applyStatic();
+    $view.innerHTML = L('<section class="card"><p class="empty">Загружаю ваши записи…</p></section>');
     document.getElementById('tabs').hidden = true;
     document.getElementById('daybar').hidden = true;
+    document.getElementById('setbtn').hidden = true;
     setStatus('connecting');
     loadAll().then(function () {
       mode = useCloud ? 'tg' : (KV.ok === false ? 'memory' : 'local');
@@ -1094,9 +1582,9 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     }).catch(function (err) {
       console.error(err);
       mode = 'failed';
-      setStatus('error', 'Нет связи с хранилищем');
+      setStatus('error', L('Нет связи с хранилищем'));
       showNote();
-      $view.innerHTML = '<section class="card"><p class="empty">Записи не загрузились. Нажмите кнопку ниже, когда появится интернет.</p><div class="btnrow"><button type="button" class="btn" data-reload="1">Попробовать снова</button></div></section>';
+      $view.innerHTML = L('<section class="card"><p class="empty">Записи не загрузились. Нажмите кнопку ниже, когда появится интернет.</p><div class="btnrow"><button type="button" class="btn" data-reload="1">Попробовать снова</button></div></section>');
     });
   }
 
@@ -1106,6 +1594,8 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     document.body.classList.toggle('setup', s);
     document.getElementById('tabs').hidden = s;
     document.getElementById('daybar').hidden = s || tab !== 'log';
+    document.getElementById('setbtn').hidden = s;
+    document.getElementById('setbtn').setAttribute('aria-pressed', String(tab === 'set'));
     $seg.innerHTML = PLAN.days.map(function (d) {
       return '<button type="button" data-day="' + d.id + '" aria-pressed="' + (d.id === cur.day) + '">' + esc(d.name) + '</button>';
     }).join('');
@@ -1122,6 +1612,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     else if (tab === 'log') renderLog();
     else if (tab === 'prog') renderProg();
     else if (tab === 'over') renderOver();
+    else if (tab === 'set') renderSettings();
     else renderPlan();
   }
   function renderAll() { renderTop(); renderTab(); }
@@ -1131,20 +1622,20 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     var tpls = TEMPLATES.map(function (t) {
       var p = t.plan(), n = 0;
       p.days.forEach(function (d) { n += d.ex.length; });
-      var meta2 = p.days.length + ' ' + plural(p.days.length, 'день', 'дня', 'дней') + (n ? ' · ' + n + ' ' + plural(n, 'упражнение', 'упражнения', 'упражнений') : '');
+      var meta2 = p.days.length + ' ' + plural(p.days.length, L('день'), L('дня'), L('дней')) + (n ? ' · ' + n + ' ' + plural(n, L('упражнение'), L('упражнения'), L('упражнений')) : '');
       return '<button type="button" class="tpl" data-tpl="' + t.k + '"><strong>' + t.name + '</strong><span class="meta">' + meta2 + '</span><span>' + t.desc + '</span></button>';
     }).join('');
     var head = choosing
-      ? '<section class="card hero"><h2>Новая программа</h2><p>Текущие упражнения с записями уйдут в архив вместе с историей, их можно будет вернуть на вкладке «План».</p><div class="btnrow"><button type="button" class="btn ghost" data-cancel="1">Отмена</button></div></section>'
-      : '<section class="card hero"><h2>Добро пожаловать</h2><p>Дневник для силовых тренировок: записывайте веса и повторы и смотрите, как растут цифры.</p>' +
-        '<ul class="how"><li>Выберите программу ниже. Её можно поменять на вкладке «План»: добавить дни, упражнения и число подходов.</li>' +
-        '<li>На тренировке вводите вес и повторы: разминку и рабочие подходы. Подсказка покажет, когда пора добавить вес.</li>' +
-        '<li>Записи хранятся в вашем аккаунте Телеграма и видны только вам.</li></ul></section>';
-    var restore = choosing ? '' : '<details class="card"><summary>У меня есть резервная копия</summary>' +
-      '<p class="sub">Вставьте текст резервной копии из раздела «Обзор → Данные».</p>' +
-      '<textarea class="fi mono" id="impbox" rows="3" placeholder="Вставьте сюда текст" aria-label="Данные для загрузки"></textarea>' +
-      '<div class="btnrow"><button type="button" class="btn" data-import="1">Загрузить</button></div><p class="msg" id="imsg"></p></details>';
-    $view.innerHTML = head + '<p class="sect">Выберите программу</p><div class="tpls">' + tpls + '</div>' + restore;
+      ? L('<section class="card hero"><h2>Новая программа</h2><p>Текущие упражнения с записями уйдут в архив вместе с историей, их можно будет вернуть на вкладке «План».</p><div class="btnrow"><button type="button" class="btn ghost" data-cancel="1">Отмена</button></div></section>')
+      : L('<section class="card hero"><h2>Добро пожаловать</h2><p>Дневник для силовых тренировок: записывайте веса и повторы и смотрите, как растут цифры.</p>') +
+        L('<ul class="how"><li>Выберите программу ниже. Её можно поменять на вкладке «План»: добавить дни, упражнения и число подходов.</li>') +
+        L('<li>На тренировке вводите вес и повторы: разминку и рабочие подходы. Подсказка покажет, когда пора добавить вес.</li>') +
+        L('<li>Записи хранятся в вашем аккаунте Телеграма и видны только вам.</li></ul></section>');
+    var restore = choosing ? '' : L('<details class="card"><summary>У меня есть резервная копия</summary>') +
+      L('<p class="sub">Вставьте текст резервной копии из раздела «Обзор → Данные».</p>') +
+      L('<textarea class="fi mono" id="impbox" rows="3" placeholder="Вставьте сюда текст" aria-label="Данные для загрузки"></textarea>') +
+      L('<div class="btnrow"><button type="button" class="btn" data-import="1">Загрузить</button></div><p class="msg" id="imsg"></p></details>');
+    $view.innerHTML = head + L('<p class="sect">Выберите программу</p><div class="tpls">') + tpls + '</div>' + restore;
   }
   function applyTemplate(k) {
     var t = TEMPLATES.filter(function (x) { return x.k === k; })[0];
@@ -1188,11 +1679,11 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     var mode = metricMode(ex), b = records(ex, curId(), cur.date, mode);
     if (!b.n) return '';
     var v = value(e, mode, ex);
-    if (v != null && b.best != null && v > b.best) return ex.type === 'w' ? 'Рекорд веса' : 'Рекорд';
+    if (v != null && b.best != null && v > b.best) return ex.type === 'w' ? L('Рекорд веса') : L('Рекорд');
     if (ex.type === 'w' && b.e1 != null) {
       var m = null;
       e.s.forEach(function (c) { var x = e1(c); if (x != null && (m == null || x > m)) m = x; });
-      if (m != null && m > b.e1 + 0.05) return 'Рекорд 1ПМ';
+      if (m != null && m > b.e1 + 0.05) return L('Рекорд 1ПМ');
     }
     return '';
   }
@@ -1211,34 +1702,34 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   function signed(d) { return (d > 0 ? '+' : d < 0 ? '−' : '±') + Math.abs(d); }
   function shareText() {
     var s = summaryData();
-    var lines = ['Тренировка «' + dayById(cur.day).name + '», ' + longDate(cur.date)];
+    var lines = [L('Тренировка «') + dayById(cur.day).name + '», ' + longDate(cur.date)];
     var l2 = [];
     if (s.dur) l2.push(durText(s.dur));
-    l2.push(s.sets + ' ' + plural(s.sets, 'подход', 'подхода', 'подходов'));
-    if (s.vol) l2.push('объём ' + nf(s.vol) + ' кг' + (s.dv != null ? ' (' + signed(s.dv) + '%)' : ''));
+    l2.push(s.sets + ' ' + plural(s.sets, L('подход'), L('подхода'), L('подходов')));
+    if (s.vol) l2.push(L('объём ') + nf(s.vol) + L(' кг') + (s.dv != null ? ' (' + signed(s.dv) + '%)' : ''));
     lines.push(l2.join(' · '));
-    if (s.prs.length) lines.push('Рекорды: ' + s.prs.map(function (p) { return p.name + ' ' + p.val; }).join('; '));
-    lines.push('Записано в «Дневнике подходов»');
+    if (s.prs.length) lines.push(L('Рекорды: ') + s.prs.map(function (p) { return p.name + ' ' + p.val; }).join('; '));
+    lines.push(L('Записано в «Дневнике подходов»'));
     return lines.join('\n');
   }
   function sessHead() {
     if (meta.t1 && meta.t0) {
       var s = summaryData();
-      var stats = '<dl class="stats"><div><dt>Время</dt><dd>' + durText(s.dur) + '</dd></div><div><dt>Подходов</dt><dd>' + s.sets + '</dd></div>' +
-        '<div><dt>Объём</dt><dd>' + (s.vol ? nf(s.vol) : '–') + '</dd></div></dl>';
+      var stats = L('<dl class="stats"><div><dt>Время</dt><dd>') + durText(s.dur) + L('</dd></div><div><dt>Подходов</dt><dd>') + s.sets + '</dd></div>' +
+        L('<div><dt>Объём</dt><dd>') + (s.vol ? nf(s.vol) : '–') + '</dd></div></dl>';
       var items = [];
-      if (s.dv != null) items.push('Объём ' + signed(s.dv) + '% к прошлой тренировке этого дня.');
-      s.prs.forEach(function (p) { items.push('Рекорд: ' + esc(p.name) + ', ' + p.val + '.'); });
-      items.push('Следующая тренировка: ' + esc(dayById(nextDayAfter(cur.day)).name) + '.');
-      return '<section class="card sum"><h2>Тренировка завершена</h2>' + stats + '<ul class="sumlist">' + items.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' +
-        '<div class="btnrow"><button type="button" class="btn" data-share="1">Поделиться результатом</button><button type="button" class="btn ghost" data-resume="1">Продолжить тренировку</button></div><p class="msg info" id="smsg"></p></section>';
+      if (s.dv != null) items.push(L('Объём ') + signed(s.dv) + L('% к прошлой тренировке этого дня.'));
+      s.prs.forEach(function (p) { items.push(L('Рекорд: ') + esc(p.name) + ', ' + p.val + '.'); });
+      items.push(L('Следующая тренировка: ') + esc(dayById(nextDayAfter(cur.day)).name) + '.');
+      return L('<section class="card sum"><h2>Тренировка завершена</h2>') + stats + '<ul class="sumlist">' + items.map(function (t) { return '<li>' + t + '</li>'; }).join('') + '</ul>' +
+        L('<div class="btnrow"><button type="button" class="btn" data-share="1">Поделиться результатом</button><button type="button" class="btn ghost" data-resume="1">Продолжить тренировку</button></div><p class="msg info" id="smsg"></p></section>');
     }
     if (meta.t0) {
-      return '<section class="card live"><span><span class="lt">Тренировка идёт</span><span class="lv" id="elapsed">' + clock(Date.now() - meta.t0) + '</span></span>' +
-        '<button type="button" class="btn" data-finish="1">Завершить</button></section>';
+      return L('<section class="card live"><span><span class="lt">Тренировка идёт</span><span class="lv" id="elapsed">') + clock(Date.now() - meta.t0) + '</span></span>' +
+        L('<button type="button" class="btn" data-finish="1">Завершить</button></section>');
     }
     if (isToday()) {
-      return '<div class="startrow"><button type="button" class="btn" data-start="1">Начать тренировку</button><p class="sub">Секундомер запустится и сам, когда вы введёте первый подход.</p></div>';
+      return L('<div class="startrow"><button type="button" class="btn" data-start="1">Начать тренировку</button><p class="sub">Секундомер запустится и сам, когда вы введёте первый подход.</p></div>');
     }
     return '';
   }
@@ -1258,7 +1749,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     var done = filled(cell) && (ex.type === 'w' ? cell.kg != null && cell.reps != null : cell.reps != null || cell.kg != null);
     var ty = TYPES[ex.type];
     function inp(f, val, ph, im) {
-      var lab = label + ', ' + (f === 'kg' ? ty.c1 + (ex.dumbbell && ex.type === 'w' ? ' на гантель' : '') : ty.c2);
+      var lab = label + ', ' + (f === 'kg' ? ty.c1 + (ex.dumbbell && ex.type === 'w' ? L(' на гантель') : '') : ty.c2);
       return '<input class="n" id="i_' + ex.id + '_' + slot + '_' + f + '" data-ex="' + ex.id + '" data-slot="' + slot + '" data-f="' + f + '" type="text" inputmode="' + im + '" autocomplete="off" enterkeyhint="next" aria-label="' + esc(lab) + '" placeholder="' + (ph == null ? '–' : fmt(ph)) + '" value="' + fmt(val) + '">';
     }
     return '<div class="row' + (warm ? ' warm' : '') + '" data-done="' + (done ? '1' : '') + '"' + (last ? ' data-last="1"' : '') + '><span class="lbl">' + label + '</span>' +
@@ -1285,12 +1776,12 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
       return o ? '<optgroup label="' + esc(d.name) + '">' + o + '</optgroup>' : '';
     }).join('');
     var ao = PLAN.archive.filter(function (e) { return !inList[e.id]; }).map(function (e) { return '<option value="' + e.id + '">' + esc(e.name) + '</option>'; }).join('');
-    if (ao) opts += '<optgroup label="Вне плана">' + ao + '</optgroup>';
-    return '<div class="swap"><select class="fi" id="swsel_' + key + '" data-swsel="' + key + '" aria-label="Упражнение">' +
-      '<option value="">Выберите упражнение</option>' + opts + '<option value="__new">Новое упражнение…</option></select>' +
-      '<input class="fi" id="swname_' + key + '" type="text" maxlength="80" placeholder="Название нового упражнения" aria-label="Название нового упражнения" hidden>' +
-      '<div class="btnrow" style="margin-top:0"><button type="button" class="btn small" data-swapok="' + key + '">' + (key === '_add' ? 'Добавить' : 'Заменить') + '</button>' +
-      '<button type="button" class="btn ghost small" data-swapno="1">Отмена</button></div></div>';
+    if (ao) opts += L('<optgroup label="Вне плана">') + ao + '</optgroup>';
+    return '<div class="swap"><select class="fi" id="swsel_' + key + '" data-swsel="' + key + L('" aria-label="Упражнение">') +
+      L('<option value="">Выберите упражнение</option>') + opts + L('<option value="__new">Новое упражнение…</option></select>') +
+      '<input class="fi" id="swname_' + key + L('" type="text" maxlength="80" placeholder="Название нового упражнения" aria-label="Название нового упражнения" hidden>') +
+      '<div class="btnrow" style="margin-top:0"><button type="button" class="btn small" data-swapok="' + key + '">' + (key === '_add' ? L('Добавить') : L('Заменить')) + '</button>' +
+      L('<button type="button" class="btn ghost small" data-swapno="1">Отмена</button></div></div>');
   }
   function exCard(it, items) {
     var ex = it.ex, ty = TYPES[ex.type];
@@ -1300,66 +1791,66 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     var n = rowsFor(ex, e);
     ensure(e, n);
     var prevLine = prev
-      ? 'Прошлый раз, ' + shortDate(prev.date) + ': <span class="chips inl">' + chipsHtml(prev.entry, ex, true) + '</span>'
-      : 'Записей ещё нет.';
+      ? L('Прошлый раз, ') + shortDate(prev.date) + ': <span class="chips inl">' + chipsHtml(prev.entry, ex, true) + '</span>'
+      : L('Записей ещё нет.');
     var sgHtml = '';
     if (sg) {
       sgHtml = '<div class="sugg ' + sg.kind + '"><span class="tag">' + sg.tag + '</span><span class="sv">' + sgText(sg, ex) + '</span><span class="sw">' + esc(sg.why) + '</span>' +
         (ex.bar && ex.type === 'w' ? '<span class="pl">' + platesText(sg.kg) + '</span>' : '') + '</div>';
     } else if (ty.sugg) {
-      sgHtml = '<div class="sugg"><span class="sw">Подберите вес, с которым получается ' + ex.lo + '–' + ex.hi + ' повторов. Со следующей тренировки здесь будет подсказка.</span></div>';
+      sgHtml = L('<div class="sugg"><span class="sw">Подберите вес, с которым получается ') + ex.lo + '–' + ex.hi + L(' повторов. Со следующей тренировки здесь будет подсказка.</span></div>');
     }
     var rows = '';
     if (ty.warm) {
       var wkg = sg ? roundTo(sg.kg * 0.5, ex.dumbbell ? 1 : 2.5) : (prev ? prev.entry.w.kg : null);
       if (wkg != null && wkg <= 0) wkg = null;
-      rows += rowHtml(ex, 'w', 'Разминка', true, e.w, wkg, prev && prev.entry.w.reps != null ? prev.entry.w.reps : null, false);
+      rows += rowHtml(ex, 'w', L('Разминка'), true, e.w, wkg, prev && prev.entry.w.reps != null ? prev.entry.w.reps : null, false);
     }
     for (var i = 0; i < n; i++) {
       var pc = prev ? prev.entry.s[i] : null;
       var pk = sg ? sg.kg : (pc ? pc.kg : null);
       var pr = sg ? sg.reps : (pc ? pc.reps : null);
-      rows += rowHtml(ex, i, (ex.type === 'cardio' ? 'Отрезок ' : 'Подход ') + (i + 1), false, e.s[i], pk, pr, i === n - 1);
+      rows += rowHtml(ex, i, (ex.type === 'cardio' ? L('Отрезок ') : L('Подход ')) + (i + 1), false, e.s[i], pk, pr, i === n - 1);
     }
     var feel = [1, 2, 3].map(function (b) {
       return '<button type="button" data-feel="' + b + '" data-fex="' + ex.id + '" aria-pressed="' + (e.feel === b) + '">' + FEEL[b] + '</button>';
     }).join('');
     var key = it.orig ? it.orig.id : ex.id;
     var acts = swapOpen === key ? swapPanel(key, items) :
-      '<div class="acts">' + (prev ? '<button type="button" class="btn ghost small" data-copy="' + ex.id + '">Как в прошлый раз</button>' : '') +
-      (sg ? '<button type="button" class="btn ghost small" data-sug="' + ex.id + '">Вес по подсказке</button>' : '') +
-      (it.orig ? '<button type="button" class="btn ghost small" data-unswap="' + it.orig.id + '">Вернуть «' + esc(it.orig.name) + '»</button>'
-        : it.planned ? '<button type="button" class="btn ghost small" data-swap="' + ex.id + '">Заменить на сегодня</button>' : '') + '</div>';
-    var c1 = ty.c1 + (ex.dumbbell && ex.type === 'w' ? ', 1 гантель' : '');
+      '<div class="acts">' + (prev ? '<button type="button" class="btn ghost small" data-copy="' + ex.id + L('">Как в прошлый раз</button>') : '') +
+      (sg ? '<button type="button" class="btn ghost small" data-sug="' + ex.id + L('">Вес по подсказке</button>') : '') +
+      (it.orig ? '<button type="button" class="btn ghost small" data-unswap="' + it.orig.id + L('">Вернуть «') + esc(it.orig.name) + '»</button>'
+        : it.planned ? '<button type="button" class="btn ghost small" data-swap="' + ex.id + L('">Заменить на сегодня</button>') : '') + '</div>';
+    var c1 = ty.c1 + (ex.dumbbell && ex.type === 'w' ? L(', 1 гантель') : '');
     return '<section class="ex" data-card="' + ex.id + '">' +
       '<div class="ex-head"><h2>' + esc(ex.name) + '</h2><div class="badges"><span class="pill pr" data-pr="' + ex.id + '"></span><span class="pill" data-delta="' + ex.id + '"></span></div></div>' +
-      (it.orig ? '<p class="swapnote">Сегодня вместо «' + esc(it.orig.name) + '»</p>' : '') +
+      (it.orig ? L('<p class="swapnote">Сегодня вместо «') + esc(it.orig.name) + '»</p>' : '') +
       '<p class="prev">' + prevLine + '</p>' + sgHtml +
       '<div class="sets"><div class="sethead"><span></span><span>' + c1 + '</span><span>' + ty.c2 + '</span></div>' + rows + '</div>' +
-      '<div class="feel" role="group" aria-label="Как прошло упражнение"><span class="fl">Как зашло:</span>' + feel + '</div>' + acts +
-      '<details class="nb"' + (ex.note ? ' open' : '') + '><summary>Заметка и настройки тренажёра</summary>' +
-      '<textarea class="fi" id="note_' + ex.id + '" data-note="' + ex.id + '" rows="2" maxlength="500" placeholder="Например: сиденье 4, валик на 3, хват средний">' + esc(ex.note) + '</textarea></details>' +
+      L('<div class="feel" role="group" aria-label="Как прошло упражнение"><span class="fl">Как зашло:</span>') + feel + '</div>' + acts +
+      '<details class="nb"' + (ex.note ? ' open' : '') + L('><summary>Заметка и настройки тренажёра</summary>') +
+      '<textarea class="fi" id="note_' + ex.id + '" data-note="' + ex.id + L('" rows="2" maxlength="500" placeholder="Например: сиденье 4, валик на 3, хват средний">') + esc(ex.note) + '</textarea></details>' +
       '</section>';
   }
   function renderLog() {
     var items = logItems();
-    var head = '<div id="shead">' + sessHead() + '</div>';
+    var head = remindCard() + '<div id="shead">' + sessHead() + '</div>';
     if (!items.length) {
-      $view.innerHTML = head + '<section class="card"><p class="empty">В этом дне пока нет упражнений. Добавьте их на вкладке «План».</p>' +
-        '<div class="btnrow"><button type="button" class="btn" data-goplan="1">Открыть «План»</button></div></section>';
+      $view.innerHTML = head + L('<section class="card"><p class="empty">В этом дне пока нет упражнений. Добавьте их на вкладке «План».</p>') +
+        L('<div class="btnrow"><button type="button" class="btn" data-goplan="1">Открыть «План»</button></div></section>');
       return;
     }
     var tip = sessionsSorted().length ? '' :
-      '<section class="card"><h2>Первая тренировка</h2><ul class="how">' +
-      '<li>Нажмите на поле, и под ним появятся кнопки «−» и «+». Серая цифра в пустом поле подставляется кнопкой «Подставить».</li>' +
-      '<li>Разминочный подход записывайте в строку «Разминка», в графики он не идёт.</li>' +
-      '<li>После каждого подхода запустится таймер отдыха. Отключить его можно на вкладке «План».</li></ul></section>';
-    var add = swapOpen === '_add' ? swapPanel('_add', items) : '<div class="btnrow"><button type="button" class="btn ghost" data-swap="_add">Добавить упражнение в эту тренировку</button></div>';
-    var fin = meta.t0 && !meta.t1 ? '<div class="btnrow"><button type="button" class="btn wide" data-finish="1">Завершить тренировку</button></div>' : '';
-    var del = '<div class="btnrow" id="delcur"' + (S[curId()] || buildDoc() ? '' : ' hidden') + '><button type="button" class="btn danger small" data-sdelcur="1">Удалить эту тренировку</button></div>';
+      L('<section class="card"><h2>Первая тренировка</h2><ul class="how">') +
+      L('<li>Нажмите на поле, и под ним появятся кнопки «−» и «+». Серая цифра в пустом поле подставляется кнопкой «Подставить».</li>') +
+      L('<li>Разминочный подход записывайте в строку «Разминка», в графики он не идёт.</li>') +
+      L('<li>После каждого подхода запустится таймер отдыха. Отключить его можно в настройках (шестерёнка вверху).</li></ul></section>');
+    var add = swapOpen === '_add' ? swapPanel('_add', items) : L('<div class="btnrow"><button type="button" class="btn ghost" data-swap="_add">Добавить упражнение в эту тренировку</button></div>');
+    var fin = meta.t0 && !meta.t1 ? L('<div class="btnrow"><button type="button" class="btn wide" data-finish="1">Завершить тренировку</button></div>') : '';
+    var del = '<div class="btnrow" id="delcur"' + (S[curId()] || buildDoc() ? '' : ' hidden') + L('><button type="button" class="btn danger small" data-sdelcur="1">Удалить эту тренировку</button></div>');
     $view.innerHTML = head + tip + items.map(function (it) { return exCard(it, items); }).join('') + add + fin + del +
       '<p class="foot" id="vol"></p>' +
-      '<p class="foot">Разминка не идёт в графики и рекорды. Подсказка веса считается по прошлым тренировкам и диапазону повторов из «Плана». Записи сохраняются сами.</p>';
+      L('<p class="foot">Разминка не идёт в графики и рекорды. Подсказка веса считается по прошлым тренировкам и диапазону повторов из «Плана». Записи сохраняются сами.</p>');
     items.forEach(function (it) { updateCard(it.ex.id); });
     updateVol();
   }
@@ -1371,10 +1862,10 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
       var mode = metricMode(ex);
       var now = e ? value(e, mode, ex) : null, pv = prev ? value(prev.entry, mode, ex) : null;
       if (now != null && pv != null) {
-        var d = r2(now - pv), u = mode === 'kg' ? 'кг' : UNIT[mode];
+        var d = r2(now - pv), u = mode === 'kg' ? L('кг') : UNIT[mode];
         if (d > 0) { el.className = 'pill up'; el.textContent = '▲ +' + fmt(d) + ' ' + u; }
         else if (d < 0) { el.className = 'pill down'; el.textContent = '▼ −' + fmt(-d) + ' ' + u; }
-        else { el.className = 'pill flat'; el.textContent = '= как в прошлый раз'; }
+        else { el.className = 'pill flat'; el.textContent = L('= как в прошлый раз'); }
       }
     }
     var pr = $view.querySelector('[data-pr="' + id + '"]');
@@ -1386,9 +1877,9 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     var el = document.getElementById('vol');
     if (!el) return;
     var now = sessVolume(draft), p = prevSameDay(), pv = p ? sessVolume(p.doc.entries) : 0;
-    if (!now) { el.textContent = pv ? 'Объём прошлой тренировки этого дня: ' + nf(pv) + ' кг.' : ''; return; }
-    var t = 'Объём сегодня: ' + nf(now) + ' кг';
-    if (pv) t += ' · в прошлый раз ' + nf(pv) + ' кг (' + signed(Math.round((now - pv) / pv * 100)) + '%)';
+    if (!now) { el.textContent = pv ? L('Объём прошлой тренировки этого дня: ') + nf(pv) + L(' кг.') : ''; return; }
+    var t = L('Объём сегодня: ') + nf(now) + L(' кг');
+    if (pv) t += L(' · в прошлый раз ') + nf(pv) + L(' кг (') + signed(Math.round((now - pv) / pv * 100)) + '%)';
     el.textContent = t + '.';
   }
 
@@ -1403,9 +1894,9 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   }
   function showStepbar(inp) {
     var st = stepInfo(inp), ph = parseNum(inp.placeholder), v = parseNum(inp.value), ex = BYID[inp.dataset.ex];
-    var html = '<button type="button" data-st="-1" aria-label="Уменьшить на ' + fmt(st) + '">−' + fmt(st) + '</button>' +
-      '<button type="button" data-st="1" aria-label="Увеличить на ' + fmt(st) + '">+' + fmt(st) + '</button>';
-    if (v == null && ph != null) html += '<button type="button" class="fill" data-st="fill">Подставить ' + fmt(ph) + '</button>';
+    var html = L('<button type="button" data-st="-1" aria-label="Уменьшить на ') + fmt(st) + '">−' + fmt(st) + '</button>' +
+      L('<button type="button" data-st="1" aria-label="Увеличить на ') + fmt(st) + '">+' + fmt(st) + '</button>';
+    if (v == null && ph != null) html += L('<button type="button" class="fill" data-st="fill">Подставить ') + fmt(ph) + '</button>';
     if (ex && ex.bar && ex.type === 'w' && inp.dataset.f === 'kg' && inp.dataset.slot !== 'w') {
       var tv = v != null ? v : ph;
       if (tv != null) html += '<span class="pl">' + platesText(tv) + '</span>';
@@ -1473,7 +1964,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     if (!T.fired) {
       T.fired = true;
       $rest.classList.add('done');
-      $rl.textContent = 'Пора на подход';
+      $rl.textContent = L('Пора на подход');
       clearInterval(T.iv); T.iv = null;
       ding();
       unlockScreen();
@@ -1484,7 +1975,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     clearTimeout(T.hideT);
     T.fired = false;
     $rest.classList.remove('done');
-    $rl.textContent = 'Отдых';
+    $rl.textContent = L('Отдых');
     $rest.hidden = false;
     document.body.classList.add('has-rest');
     clearInterval(T.iv);
@@ -1524,7 +2015,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
 
   /* ---------- графики ---------- */
   function lineChart(pts, key, si, unit, steps, aria) {
-    var W = 360, H = 214, L = 40, R = 18, Tp = 30, B = 30;
+    var W = 360, H = 214, LM = 40, R = 18, Tp = 30, B = 30;
     var vs = pts.map(function (p) { return p.v; });
     var lo = Math.min.apply(null, vs), hi = Math.max.apply(null, vs);
     var y0 = 0, y1 = 1, step = steps[0];
@@ -1538,12 +2029,12 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     }
     var t = pts.map(function (p) { return dt(p.date).getTime(); });
     var tmin = Math.min.apply(null, t), tmax = Math.max.apply(null, t);
-    function X(i) { return tmax === tmin ? (L + W - R) / 2 : L + (t[i] - tmin) / (tmax - tmin) * (W - L - R); }
+    function X(i) { return tmax === tmin ? (LM + W - R) / 2 : LM + (t[i] - tmin) / (tmax - tmin) * (W - LM - R); }
     function Y(v) { return Tp + (1 - (v - y0) / (y1 - y0)) * (H - Tp - B); }
     var g = '';
     for (var v = y0; v <= y1 + 1e-9; v += step) {
-      g += '<line class="grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"></line>' +
-        '<text class="tick" x="' + (L - 6) + '" y="' + (Y(v) + 4).toFixed(1) + '" text-anchor="end">' + fmt(v) + '</text>';
+      g += '<line class="grid" x1="' + LM + '" x2="' + (W - R) + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"></line>' +
+        '<text class="tick" x="' + (LM - 6) + '" y="' + (Y(v) + 4).toFixed(1) + '" text-anchor="end">' + fmt(v) + '</text>';
     }
     var xy = pts.map(function (p, i) { return X(i).toFixed(1) + ',' + Y(p.v).toFixed(1); });
     var base = Y(y0).toFixed(1);
@@ -1555,7 +2046,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
       hits += '<circle class="hit" data-chart="' + key + '" data-pt="' + i + '" cx="' + X(i).toFixed(1) + '" cy="' + Y(p.v).toFixed(1) + '" r="16"></circle>';
     });
     var sx = X(si), sy = Y(pts[si].v);
-    var anchor = sx > W - 60 ? 'end' : (sx < L + 24 ? 'start' : 'middle');
+    var anchor = sx > W - 60 ? 'end' : (sx < LM + 24 ? 'start' : 'middle');
     var lbl = '<text class="vlbl" x="' + sx.toFixed(1) + '" y="' + (sy - 11).toFixed(1) + '" text-anchor="' + anchor + '">' + fmt(pts[si].v) + ' ' + unit + '</text>';
     var xl = pts.length === 1
       ? '<text class="tick" x="' + X(0).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="middle">' + shortDate(pts[0].date) + '</text>'
@@ -1568,33 +2059,33 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     return 'M' + x + ',' + (y + h) + 'V' + (y + r) + 'Q' + x + ',' + y + ' ' + (x + r) + ',' + y + 'H' + (x + w - r) + 'Q' + (x + w) + ',' + y + ' ' + (x + w) + ',' + (y + r) + 'V' + (y + h) + 'Z';
   }
   function barChart(items, si) {
-    var W = 360, H = 206, L = 46, R = 8, Tp = 26, B = 40;
+    var W = 360, H = 206, LM = 46, R = 8, Tp = 26, B = 40;
     var max = Math.max.apply(null, items.map(function (i) { return i.v; }));
     var steps = [100, 250, 500, 1000, 2000, 2500, 5000, 10000, 20000, 50000], st = steps[steps.length - 1];
     for (var k = 0; k < steps.length; k++) { if (Math.ceil(max / steps[k]) <= 4) { st = steps[k]; break; } }
     var top = Math.max(st, Math.ceil(max / st) * st);
     function Y(v) { return Tp + (1 - v / top) * (H - Tp - B); }
-    var n = items.length, slot = (W - L - R) / n, bw = Math.min(28, slot - 4);
+    var n = items.length, slot = (W - LM - R) / n, bw = Math.min(28, slot - 4);
     var g = '';
     for (var v = 0; v <= top + 1e-9; v += st) {
-      g += '<line class="grid" x1="' + L + '" x2="' + (W - R) + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"></line>' +
-        '<text class="tick" x="' + (L - 6) + '" y="' + (Y(v) + 4).toFixed(1) + '" text-anchor="end">' + nf(v) + '</text>';
+      g += '<line class="grid" x1="' + LM + '" x2="' + (W - R) + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"></line>' +
+        '<text class="tick" x="' + (LM - 6) + '" y="' + (Y(v) + 4).toFixed(1) + '" text-anchor="end">' + nf(v) + '</text>';
     }
     var bars = '', labels = '', hits = '';
     items.forEach(function (it, i) {
-      var x = L + i * slot + (slot - bw) / 2, y = Y(it.v), h = Math.max(1, Y(0) - y);
+      var x = LM + i * slot + (slot - bw) / 2, y = Y(it.v), h = Math.max(1, Y(0) - y);
       bars += '<path class="bar' + (i === si ? '' : ' dim') + '" d="' + barPath(+x.toFixed(1), +y.toFixed(1), +bw.toFixed(1), +h.toFixed(1)) + '"></path>';
       var cx = (x + bw / 2).toFixed(1);
       if (n <= 7 || (n - 1 - i) % 2 === 0) {
         labels += '<text class="tick" x="' + cx + '" y="' + (H - 22) + '" text-anchor="middle">' + shortDate(it.date) + '</text>' +
           '<text class="tick" x="' + cx + '" y="' + (H - 8) + '" text-anchor="middle">' + dayTag(it.day) + '</text>';
       }
-      hits += '<rect class="hit" data-chart="vol" data-pt="' + i + '" x="' + (L + i * slot).toFixed(1) + '" y="' + Tp + '" width="' + slot.toFixed(1) + '" height="' + (H - Tp - B) + '"></rect>';
+      hits += '<rect class="hit" data-chart="vol" data-pt="' + i + '" x="' + (LM + i * slot).toFixed(1) + '" y="' + Tp + '" width="' + slot.toFixed(1) + '" height="' + (H - Tp - B) + '"></rect>';
     });
-    var s = items[si], sx = L + si * slot + slot / 2;
-    var anchor = sx > W - 40 ? 'end' : (sx < L + 30 ? 'start' : 'middle');
+    var s = items[si], sx = LM + si * slot + slot / 2;
+    var anchor = sx > W - 40 ? 'end' : (sx < LM + 30 ? 'start' : 'middle');
     var lbl = '<text class="vlbl" x="' + sx.toFixed(1) + '" y="' + (Y(s.v) - 8).toFixed(1) + '" text-anchor="' + anchor + '">' + nf(s.v) + '</text>';
-    return '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Объём тренировок, кг">' + g + bars + labels + lbl + hits + '</svg>';
+    return '<svg class="chart" viewBox="0 0 ' + W + ' ' + H + L('" role="img" aria-label="Объём тренировок, кг">') + g + bars + labels + lbl + hits + '</svg>';
   }
 
   /* ---------- прогресс ---------- */
@@ -1602,26 +2093,26 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     var mode = metricMode(e), hh = history(e.id).map(function (p) { return value(p.entry, mode, e); }).filter(function (v) { return v != null; });
     var last = hh.length ? hh[hh.length - 1] : null, first = hh.length ? hh[0] : null;
     var d = hh.length > 1 ? r2(last - first) : null, u = UNIT[mode];
-    var dtxt = d == null ? (hh.length ? 'первая запись' : 'нет записей') : d > 0 ? '+' + fmt(d) + ' ' + u + ' с начала' : d < 0 ? '−' + fmt(-d) + ' ' + u + ' с начала' : 'без изменений';
+    var dtxt = d == null ? (hh.length ? L('первая запись') : L('нет записей')) : d > 0 ? '+' + fmt(d) + ' ' + u + L(' с начала') : d < 0 ? '−' + fmt(-d) + ' ' + u + L(' с начала') : L('без изменений');
     return '<button type="button" class="srow" data-sel="' + e.id + '" aria-pressed="' + (e.id === selEx) + '">' +
       '<span class="sname">' + esc(e.name) + '</span>' +
       '<span class="sright"><span class="sval">' + (last != null ? (mode === 'kg' && e.type === 'bw' ? valText(last, mode, e) : fmt(last)) : '–') + '</span><span class="sd' + (d > 0 ? ' up' : '') + '">' + dtxt + '</span></span></button>';
   }
   function renderProg() {
     if (!selEx || !BYID[selEx]) selEx = ALL.length ? ALL[0].id : null;
-    if (!selEx) { $view.innerHTML = '<section class="card"><p class="empty">В плане нет упражнений. Добавьте их на вкладке «План».</p></section>'; return; }
+    if (!selEx) { $view.innerHTML = L('<section class="card"><p class="empty">В плане нет упражнений. Добавьте их на вкладке «План».</p></section>'); return; }
     var ex = BYID[selEx], mode = metricMode(ex);
     var h = history(selEx).map(function (p) { return { date: p.date, entry: p.entry, v: value(p.entry, mode, ex) }; }).filter(function (p) { return p.v != null; });
-    if (sel.ex == null || sel.ex >= h.length) sel.ex = h.length - 1;
-    var label = { kg: ex.type === 'bw' ? 'дополнительный вес, кг' : 'максимальный рабочий вес, кг', reps: 'лучший подход, повторы', sec: 'лучший подход, секунды', km: 'дистанция за тренировку, км', min: 'время за тренировку, минуты' }[mode];
+    if (sel.ex == null || sel.ex < 0 || sel.ex >= h.length) sel.ex = h.length - 1;
+    var label = { kg: ex.type === 'bw' ? L('дополнительный вес, кг') : L('максимальный рабочий вес, кг'), reps: L('лучший подход, повторы'), sec: L('лучший подход, секунды'), km: L('дистанция за тренировку, км'), min: L('время за тренировку, минуты') }[mode];
     var body;
     if (!h.length) {
-      body = '<p class="empty">По этому упражнению записей нет. После первой тренировки здесь появится точка, после второй график получит линию.</p>';
+      body = L('<p class="empty">По этому упражнению записей нет. После первой тренировки здесь появится точка, после второй график получит линию.</p>');
     } else {
       var rec = records(ex, null, null, mode), p = h[sel.ex];
-      var stats = '<dl class="stats"><div><dt>' + (ex.type === 'w' ? 'Лучший вес' : 'Лучший результат') + '</dt><dd>' + valText(rec.best, mode, ex) + '</dd></div>' +
-        (ex.type === 'w' ? '<div><dt>Расчётный 1ПМ</dt><dd>' + (rec.e1 != null ? '≈' + fmt(Math.round(rec.e1 * 2) / 2) + ' кг' : '–') + '</dd></div>' : '<div><dt>Тип</dt><dd style="font-size:15px">' + TYPES[ex.type].name + '</dd></div>') +
-        '<div><dt>Тренировок</dt><dd>' + rec.n + '</dd></div></dl>';
+      var stats = '<dl class="stats"><div><dt>' + (ex.type === 'w' ? L('Лучший вес') : L('Лучший результат')) + '</dt><dd>' + valText(rec.best, mode, ex) + '</dd></div>' +
+        (ex.type === 'w' ? L('<div><dt>Расчётный 1ПМ</dt><dd>') + (rec.e1 != null ? '≈' + fmt(Math.round(rec.e1 * 2) / 2) + L(' кг') : '–') + '</dd></div>' : L('<div><dt>Тип</dt><dd style="font-size:15px">') + TYPES[ex.type].name + '</dd></div>') +
+        L('<div><dt>Тренировок</dt><dd>') + rec.n + '</dd></div></dl>';
       body = stats +
         lineChart(h, 'ex', sel.ex, UNIT[mode], mode === 'kg' ? [1, 2.5, 5, 10, 20, 25, 50] : [1, 2, 5, 10, 20, 30, 60, 120], label + ': ' + ex.name) +
         '<p class="readout"><strong>' + longDate(p.date) + '</strong><br><span class="chips" style="margin-top:6px">' + chipsHtml(p.entry, ex, true) + '</span></p>' +
@@ -1633,10 +2124,10 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
       return d.ex.length ? '<p class="sect">' + esc(d.name) + '</p><div class="slist">' + d.ex.map(srow).join('') + '</div>' : '';
     }).join('');
     var arch = PLAN.archive.filter(function (e) { return history(e.id).length; });
-    if (arch.length) lists += '<p class="sect">Вне плана</p><div class="slist">' + arch.map(srow).join('') + '</div>';
-    var where = inArchive(ex.id) ? 'вне плана' : esc(dayById(ex.day).name);
-    $view.innerHTML = '<section class="card"><h2>' + esc(ex.name) + '</h2><p class="sub">' + where + ' · ' + label + (ex.dumbbell && ex.type === 'w' ? ' (одна гантель)' : '') +
-      (ex.type === 'w' ? '. 1ПМ считается по формуле Эпли, это ориентир, а не норматив.' : '.') + '</p>' + body + '</section>' + lists;
+    if (arch.length) lists += L('<p class="sect">Вне плана</p><div class="slist">') + arch.map(srow).join('') + '</div>';
+    var where = inArchive(ex.id) ? L('вне плана') : esc(dayById(ex.day).name);
+    $view.innerHTML = '<section class="card"><h2>' + esc(ex.name) + '</h2><p class="sub">' + where + ' · ' + label + (ex.dumbbell && ex.type === 'w' ? L(' (одна гантель)') : '') +
+      (ex.type === 'w' ? L('. 1ПМ считается по формуле Эпли, это ориентир, а не норматив.') : '.') + '</p>' + body + '</section>' + lists;
   }
 
   /* ---------- обзор ---------- */
@@ -1650,9 +2141,9 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     if (c >= goal) streak++;
     w = addDays(w, -7);
     while ((cnt[w] || 0) >= goal) { streak++; w = addDays(w, -7); }
-    var txt = c >= goal ? 'План недели выполнен: ' + c + ' из ' + goal + '.' : 'Сделано ' + c + ' из ' + goal + '. Следующая тренировка: ' + esc(dayById(nextDay()).name) + '.';
-    return '<section class="card"><h2>Эта неделя</h2><div class="dots" aria-hidden="true">' + dots + '</div><p class="big">' + txt + '</p>' +
-      '<p class="sub">Недель подряд с выполненным планом: ' + streak + '. Цель меняется на вкладке «План».</p></section>';
+    var txt = c >= goal ? L('План недели выполнен: ') + c + L(' из ') + goal + '.' : L('Сделано ') + c + L(' из ') + goal + L('. Следующая тренировка: ') + esc(dayById(nextDay()).name) + '.';
+    return L('<section class="card"><h2>Эта неделя</h2><div class="dots" aria-hidden="true">') + dots + '</div><p class="big">' + txt + '</p>' +
+      L('<p class="sub">Недель подряд с выполненным планом: ') + streak + L('. Цель меняется в настройках.</p></section>');
   }
   function groupCard() {
     var tw = weekStart(todayStr()), pw = addDays(tw, -7), now = {}, before = {}, seen = {};
@@ -1671,50 +2162,50 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     if (!order.length) return '';
     var rows = order.map(function (g) {
       var n = now[g] || 0, p = before[g] || 0, wdt = Math.min(100, n / 20 * 100);
-      return '<div class="grow"><span>' + (g === 'none' ? 'Без группы' : GNAME[g]) + '</span><span class="gtrack" aria-hidden="true"><span style="width:' + wdt + '%"></span><i></i></span>' +
+      return '<div class="grow"><span>' + (g === 'none' ? L('Без группы') : GNAME[g]) + '</span><span class="gtrack" aria-hidden="true"><span style="width:' + wdt + '%"></span><i></i></span>' +
         '<span class="gval">' + n + ' <small>(' + p + ')</small></span></div>';
     }).join('');
-    return '<section class="card"><h2>Подходы на мышцы</h2><p class="sub">Рабочие подходы на этой неделе, в скобках — на прошлой. Для роста мышц обычно советуют 10–20 подходов в неделю на группу: метка на шкале — 10, правый край — 20.' +
-      (seen.none ? ' Группу упражнения можно указать на вкладке «План».' : '') + '</p><div class="grows">' + rows + '</div></section>';
+    return L('<section class="card"><h2>Подходы на мышцы</h2><p class="sub">Рабочие подходы на этой неделе, в скобках — на прошлой. Для роста мышц обычно советуют 10–20 подходов в неделю на группу: метка на шкале — 10, правый край — 20.') +
+      (seen.none ? L(' Группу упражнения можно указать на вкладке «План».') : '') + '</p><div class="grows">' + rows + '</div></section>';
   }
   function calCard() {
     var byDate = {};
     sessionsSorted().forEach(function (x) { (byDate[x.doc.date] = byDate[x.doc.date] || []).push(x.doc.day); });
     var today = todayStr(), start = addDays(weekStart(today), -49);
-    var html = '<span></span>' + ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map(function (d) { return '<span class="ch">' + d + '</span>'; }).join('');
+    var html = '<span></span>' + [L('Пн'), L('Вт'), L('Ср'), L('Чт'), L('Пт'), L('Сб'), L('Вс')].map(function (d) { return '<span class="ch">' + d + '</span>'; }).join('');
     for (var r = 0; r < 8; r++) {
       var ws = addDays(start, r * 7);
       html += '<span class="wl">' + shortDate(ws) + '</span>';
       for (var c = 0; c < 7; c++) {
         var d = addDays(ws, c), days = byDate[d], dd = String(+d.slice(8, 10));
         if (d > today) { html += '<span class="cell fut">' + dd + '</span>'; continue; }
-        var label = longDate(d) + (days ? ', ' + days.map(function (x) { return dayById(x).name; }).join(' и ') : ', без тренировки');
+        var label = longDate(d) + (days ? ', ' + days.map(function (x) { return dayById(x).name; }).join(L(' и ')) : L(', без тренировки'));
         html += '<button type="button" class="cell' + (days ? ' on' : '') + (d === today ? ' today' : '') + '" data-cal="' + d + '" aria-label="' + esc(label) + '">' +
           (days ? days.map(dayTag).join('+') : dd) + '</button>';
       }
     }
-    var legend = PLAN.days.map(function (d, i) { return 'Д' + (i + 1) + ' — ' + esc(d.name); }).join(', ');
-    return '<section class="card"><h2>Календарь</h2><p class="sub">Последние 8 недель. ' + legend + '. Нажмите на день, чтобы открыть или дописать тренировку.</p><div class="cal">' + html + '</div></section>';
+    var legend = PLAN.days.map(function (d, i) { return L('Д') + (i + 1) + ' — ' + esc(d.name); }).join(', ');
+    return L('<section class="card"><h2>Календарь</h2><p class="sub">Последние 8 недель. ') + legend + L('. Нажмите на день, чтобы открыть или дописать тренировку.</p><div class="cal">') + html + '</div></section>';
   }
   function histCard() {
     var l = sessionsSorted().slice().reverse();
     if (!l.length) return '';
     var rows = l.slice(0, histN).map(function (x) {
-      var d = x.doc, bits = [entryCount(d) + ' упр.'];
+      var d = x.doc, bits = [entryCount(d) + L(' упр.')];
       if (d.t0 && d.t1) bits.push(durText(d.t1 - d.t0));
       var v = sessVolume(d.entries);
-      if (v) bits.push(nf(v) + ' кг');
+      if (v) bits.push(nf(v) + L(' кг'));
       return '<div class="srec"><button type="button" class="open" data-open="' + x.id + '"><span>' + longDate(d.date) + ' · ' + esc(dayById(d.day).name) + '</span><span class="sm">' + bits.join(' · ') + '</span></button>' +
-        '<button type="button" class="x" data-sdel="' + x.id + '" aria-label="Удалить тренировку ' + longDate(d.date) + '">×</button></div>';
+        '<button type="button" class="x" data-sdel="' + x.id + L('" aria-label="Удалить тренировку ') + longDate(d.date) + '">×</button></div>';
     }).join('');
-    var more = l.length > histN ? '<div class="btnrow"><button type="button" class="btn ghost small" data-more="1">Показать ещё</button></div>' : '';
-    return '<section class="card"><h2>Все тренировки</h2><p class="sub">Всего: ' + l.length + '. Нажмите на тренировку, чтобы открыть её.</p>' + rows + more + '</section>';
+    var more = l.length > histN ? L('<div class="btnrow"><button type="button" class="btn ghost small" data-more="1">Показать ещё</button></div>') : '';
+    return L('<section class="card"><h2>Все тренировки</h2><p class="sub">Всего: ') + l.length + L('. Нажмите на тренировку, чтобы открыть её.</p>') + rows + more + '</section>';
   }
   function volCard() {
     var all = sessionsSorted().map(function (x) { return { date: x.doc.date, day: x.doc.day, v: sessVolume(x.doc.entries) }; })
       .filter(function (x) { return x.v > 0; });
     var items = all.slice(-10);
-    if (!items.length) return '<section class="card"><h2>Объём тренировок</h2><p class="empty">Появится после первой тренировки: сумма «вес × повторы» по рабочим подходам.</p></section>';
+    if (!items.length) return L('<section class="card"><h2>Объём тренировок</h2><p class="empty">Появится после первой тренировки: сумма «вес × повторы» по рабочим подходам.</p></section>');
     if (sel.vol == null || sel.vol >= items.length) sel.vol = items.length - 1;
     var s = items[sel.vol];
     function prevOf(it) {
@@ -1722,58 +2213,124 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
       return null;
     }
     var p = prevOf(s);
-    var cmp = p ? ' · к прошлой тренировке этого дня: ' + signed(Math.round((s.v - p.v) / p.v * 100)) + '%' : '';
+    var cmp = p ? L(' · к прошлой тренировке этого дня: ') + signed(Math.round((s.v - p.v) / p.v * 100)) + '%' : '';
     var rows = items.slice().reverse().map(function (it) {
       var q = prevOf(it);
       var d = q ? Math.round((it.v - q.v) / q.v * 100) : null;
-      return '<div class="lrow"><span>' + shortDate(it.date) + ' · ' + esc(dayById(it.day).name) + '</span><span class="lm">' + (d == null ? '' : signed(d) + '%') + '</span><span>' + nf(it.v) + ' кг</span></div>';
+      return '<div class="lrow"><span>' + shortDate(it.date) + ' · ' + esc(dayById(it.day).name) + '</span><span class="lm">' + (d == null ? '' : signed(d) + '%') + '</span><span>' + nf(it.v) + L(' кг</span></div>');
     }).join('');
-    return '<section class="card"><h2>Объём тренировок</h2><p class="sub">Сумма «вес × повторы» по рабочим подходам упражнений с весом, гантели считаются парой. Сравнивайте с тем же днём программы: упражнения разные.</p>' +
+    return L('<section class="card"><h2>Объём тренировок</h2><p class="sub">Сумма «вес × повторы» по рабочим подходам упражнений с весом, гантели считаются парой. Сравнивайте с тем же днём программы: упражнения разные.</p>') +
       barChart(items, sel.vol) +
-      '<p class="readout"><strong>' + longDate(s.date) + '</strong> · ' + esc(dayById(s.day).name) + ' · ' + nf(s.v) + ' кг' + cmp + '</p>' +
+      '<p class="readout"><strong>' + longDate(s.date) + '</strong> · ' + esc(dayById(s.day).name) + ' · ' + nf(s.v) + L(' кг') + cmp + '</p>' +
       '<div class="hist">' + rows + '</div></section>';
   }
   function bodyCard() {
     var items = BODY.items.slice().sort(function (a, b) { return a.date < b.date ? -1 : 1; });
     var last = items.length ? items[items.length - 1] : null;
-    var form = '<form class="bform" id="bodyform"><input class="fi" id="bkg" type="text" inputmode="decimal" autocomplete="off" placeholder="' + (last ? fmt(last.kg) : 'кг') + '" aria-label="Вес тела, кг">' +
-      '<input class="fi" id="bdate" type="date" value="' + todayStr() + '" max="' + todayStr() + '" aria-label="Дата взвешивания">' +
-      '<button type="submit" class="btn">Записать</button></form><p class="msg" id="bmsg"></p>';
+    var form = '<form class="bform" id="bodyform"><input class="fi" id="bkg" type="text" inputmode="decimal" autocomplete="off" placeholder="' + (last ? fmt(last.kg) : L('кг')) + L('" aria-label="Вес тела, кг">') +
+      '<input class="fi" id="bdate" type="date" value="' + todayStr() + '" max="' + todayStr() + L('" aria-label="Дата взвешивания">') +
+      L('<button type="submit" class="btn">Записать</button></form><p class="msg" id="bmsg"></p>');
     var body = '';
     if (items.length) {
       if (sel.body == null || sel.body >= items.length) sel.body = items.length - 1;
       var f = items[0], d = r2(last.kg - f.kg);
-      body = lineChart(items.map(function (x) { return { date: x.date, v: x.kg }; }), 'body', sel.body, 'кг', [0.5, 1, 2, 5, 10], 'Вес тела по датам') +
-        '<p class="readout"><strong>' + longDate(items[sel.body].date) + '</strong> · ' + fmt(items[sel.body].kg) + ' кг' +
-        (items.length > 1 ? '<br>С начала записей: ' + (d > 0 ? '+' : d < 0 ? '−' : '±') + fmt(Math.abs(d)) + ' кг' : '') + '</p>' +
+      body = lineChart(items.map(function (x) { return { date: x.date, v: x.kg }; }), 'body', sel.body, L('кг'), [0.5, 1, 2, 5, 10], L('Вес тела по датам')) +
+        '<p class="readout"><strong>' + longDate(items[sel.body].date) + '</strong> · ' + fmt(items[sel.body].kg) + L(' кг') + (bmi(items[sel.body].kg) != null ? ' · ' + bmiText(items[sel.body].kg) : '') +
+        (items.length > 1 ? L('<br>С начала записей: ') + (d > 0 ? '+' : d < 0 ? '−' : '±') + fmt(Math.abs(d)) + L(' кг') : '') + '</p>' +
         '<div class="hist">' + items.slice().reverse().slice(0, 12).map(function (x) {
-          return '<div class="lrow"><span>' + longDate(x.date) + '</span><span>' + fmt(x.kg) + ' кг</span><button type="button" class="x" data-bdel="' + x.date + '" aria-label="Удалить запись за ' + longDate(x.date) + '">×</button></div>';
+          return '<div class="lrow"><span>' + longDate(x.date) + '</span><span>' + fmt(x.kg) + L(' кг</span><button type="button" class="x" data-bdel="') + x.date + L('" aria-label="Удалить запись за ') + longDate(x.date) + '">×</button></div>';
         }).join('') + '</div>';
-    } else body = '<p class="empty">Взвешивайтесь утром натощак раз в неделю, так цифры честнее.</p>';
-    return '<section class="card"><h2>Вес тела</h2>' + form + body + '</section>';
+    } else body = L('<p class="empty">Взвешивайтесь утром натощак раз в неделю, так цифры честнее.</p>');
+    return L('<section class="card"><h2>Вес тела</h2>') + form + body + '</section>';
   }
   function dataCard() {
-    return '<section class="card"><h2>Данные</h2>' +
-      '<p class="sub">Таблицу можно сразу вставить в Excel или Google Таблицы. Резервная копия восстанавливает всё, включая план и заметки: сохраните её, например, в «Избранное» Телеграма.</p>' +
-      '<div class="btnrow"><button type="button" class="btn ghost small" data-cp="train">Скопировать тренировки</button>' +
-      '<button type="button" class="btn ghost small" data-cp="body">Скопировать вес тела</button>' +
-      '<button type="button" class="btn ghost small" data-cp="backup">Скопировать резервную копию</button></div>' +
-      '<p class="msg info" id="dmsg"></p><textarea class="fi mono" id="copybox" rows="5" readonly hidden aria-label="Текст для копирования"></textarea>' +
-      '<h3>Загрузить данные</h3><p class="sub">Вставьте текст резервной копии. Тренировки с теми же датами заменятся, остальные записи останутся.</p>' +
-      '<textarea class="fi mono" id="impbox" rows="3" placeholder="Вставьте сюда текст" aria-label="Данные для загрузки"></textarea>' +
-      '<div class="btnrow"><button type="button" class="btn" data-import="1">Загрузить</button></div><p class="msg" id="imsg"></p></section>';
+    return L('<section class="card"><h2>Данные</h2>') +
+      L('<p class="sub">Таблицу можно сразу вставить в Excel или Google Таблицы. Резервная копия восстанавливает всё, включая план, заметки и настройки: сохраните её, например, в «Избранное» Телеграма.</p>') +
+      L('<div class="btnrow"><button type="button" class="btn ghost small" data-cp="train">Скопировать тренировки</button>') +
+      L('<button type="button" class="btn ghost small" data-cp="body">Скопировать вес тела</button>') +
+      L('<button type="button" class="btn ghost small" data-cp="backup">Скопировать резервную копию</button></div>') +
+      L('<p class="msg info" id="dmsg"></p><textarea class="fi mono" id="copybox" rows="5" readonly hidden aria-label="Текст для копирования"></textarea>') +
+      L('<h3>Загрузить данные</h3><p class="sub">Вставьте текст резервной копии. Тренировки с теми же датами заменятся, остальные записи останутся.</p>') +
+      L('<textarea class="fi mono" id="impbox" rows="3" placeholder="Вставьте сюда текст" aria-label="Данные для загрузки"></textarea>') +
+      L('<div class="btnrow"><button type="button" class="btn" data-import="1">Загрузить</button></div><p class="msg" id="imsg"></p></section>');
   }
   function resetCard() {
-    return '<section class="card reset"><h2>Начать заново</h2>' +
-      '<p class="sub">Удаляет все тренировки и вес тела, например после долгого перерыва. Вернуть их можно только из резервной копии, поэтому сначала скопируйте её и сохраните, например, в «Избранное» Телеграма.</p>' +
-      '<div class="btnrow"><button type="button" class="btn ghost small" data-cp="backup" data-cpm="rmsg">Скопировать резервную копию</button></div>' +
+    return L('<section class="card reset"><h2>Начать заново</h2>') +
+      L('<p class="sub">Удаляет все тренировки и вес тела, например после долгого перерыва. Вернуть их можно только из резервной копии, поэтому сначала скопируйте её и сохраните, например, в «Избранное» Телеграма.</p>') +
+      L('<div class="btnrow"><button type="button" class="btn ghost small" data-cp="backup" data-cpm="rmsg">Скопировать резервную копию</button></div>') +
       '<p class="msg info" id="rmsg"></p>' +
-      '<textarea class="fi mono" id="rbox" rows="4" readonly hidden aria-label="Резервная копия для копирования"></textarea>' +
-      '<label class="chk"><input type="checkbox" id="rs_plan">Удалить и программу: дни, упражнения, заметки</label>' +
-      '<div class="btnrow"><button type="button" class="btn danger" data-reset="1">Удалить все записи</button></div></section>';
+      L('<textarea class="fi mono" id="rbox" rows="4" readonly hidden aria-label="Резервная копия для копирования"></textarea>') +
+      L('<label class="chk"><input type="checkbox" id="rs_plan">Удалить и программу: дни, упражнения, заметки</label>') +
+      L('<div class="btnrow"><button type="button" class="btn danger" data-reset="1">Удалить все записи</button></div></section>');
   }
   function renderOver() {
     $view.innerHTML = weekCard() + groupCard() + calCard() + histCard() + volCard() + bodyCard() + dataCard() + resetCard();
+  }
+
+  /* ---------- профиль: ИМТ и напоминание о взвешивании ---------- */
+  function bmi(kg) { if (!PREFS.height || !kg) return null; var m = PREFS.height / 100; return Math.round(kg / (m * m) * 10) / 10; }
+  function bmiText(kg) {
+    var b = bmi(kg);
+    if (b == null) return '';
+    var cat = b < 18.5 ? L('ниже нормы') : b < 25 ? L('норма') : b < 30 ? L('выше нормы') : L('ожирение');
+    return L('ИМТ ') + fmt(b) + ' (' + cat + ')';
+  }
+  function lastBody() { return BODY.items.length ? BODY.items[BODY.items.length - 1] : null; }
+  function daysSince(s) { return Math.round((dt(todayStr()) - dt(s)) / 864e5); }
+  function remindCard() {
+    if (!PREFS.remind || !isToday()) return '';
+    var lb = lastBody(), txt;
+    if (lb) {
+      var d = daysSince(lb.date);
+      if (d < 7) return '';
+      txt = L('Пора взвеситься: с прошлого взвешивания прошло {n}.').replace('{n}', d + ' ' + plural(d, L('день'), L('дня'), L('дней')));
+    } else {
+      if (!sessionsSorted().length) return '';
+      txt = L('Запишите вес тела, чтобы видеть, как он меняется.');
+    }
+    return '<section class="card remind"><p>' + txt + '</p><button type="button" class="btn ghost small" data-goweigh="1">' + L('Записать вес') + '</button></section>';
+  }
+
+  /* ---------- настройки ---------- */
+  function segHtml(attr, items, curV, label) {
+    return '<div class="seg" role="group" aria-label="' + esc(label) + '">' + items.map(function (it) {
+      return '<button type="button" ' + attr + '="' + it[0] + '" aria-pressed="' + (it[0] === curV) + '">' + esc(it[1]) + '</button>';
+    }).join('') + '</div>';
+  }
+  function renderSettings() {
+    var lb = lastBody();
+    var names = { blue: L('Синий'), violet: L('Фиолетовый'), green: L('Зелёный'), orange: L('Оранжевый'), pink: L('Розовый'), graphite: L('Графит') };
+    var sw = ACCENTS.map(function (a) {
+      return '<button type="button" class="swatch" data-acc="' + a + '" data-sw="' + a + '" aria-pressed="' + (PREFS.accent === a) + '" aria-label="' + esc(names[a]) + '"></button>';
+    }).join('');
+    var bt = lb ? bmiText(lb.kg) : '';
+    $view.innerHTML = '<section class="card"><h2>' + L('Язык') + '</h2>' + segHtml('data-lang', [['ru', 'Русский'], ['en', 'English']], PREFS.lang, L('Язык')) + '</section>' +
+      '<section class="card"><h2>' + L('Оформление') + '</h2><p class="sub">' + L('Тема') + '</p>' +
+      segHtml('data-thm', [['auto', L('Авто')], ['light', L('Светлая')], ['dark', L('Тёмная')]], PREFS.theme, L('Тема')) +
+      '<p class="sub">' + L('Цвет акцента') + '</p><div class="swatches" role="group" aria-label="' + esc(L('Цвет акцента')) + '">' + sw + '</div></section>' +
+      '<section class="card"><h2>' + L('Профиль') + '</h2>' +
+      '<div class="field"><label for="set_h">' + L('Рост, см') + '</label><input class="fi" id="set_h" type="text" inputmode="numeric" autocomplete="off" value="' + (PREFS.height || '') + '" placeholder="175"></div>' +
+      '<div class="field"><span>' + L('Вес тела') + '</span><span>' + (lb ? fmt(lb.kg) + L(' кг') + ', ' + longDate(lb.date) : '–') + ' <button type="button" class="btn ghost small" data-goweigh="1">' + L('Записать') + '</button></span></div>' +
+      '<p class="sub" id="bmiline">' + (bt || (PREFS.height ? '' : L('Укажите рост, и рядом с весом тела появится индекс массы тела (ИМТ).'))) + '</p>' +
+      '<p class="msg" id="setmsg"></p></section>' +
+      '<section class="card"><h2>' + L('Тренировка') + '</h2>' +
+      '<label class="chk"><input type="checkbox" id="set_timer"' + (PLAN.autoTimer ? ' checked' : '') + L('>Запускать таймер отдыха после подхода</label>') +
+      L('<div class="field"><label for="set_goal">Тренировок в неделю (цель)</label><input class="fi" id="set_goal" type="text" inputmode="numeric" value="') + PLAN.goal + '"></div>' +
+      L('<div class="field"><label for="set_bar">Вес грифа, кг</label><input class="fi" id="set_bar" type="text" inputmode="decimal" value="') + fmt(PLAN.barKg) + '"></div>' +
+      L('<div class="field"><label for="set_plates">Блины в зале, кг (через пробел)</label><input class="fi wide" id="set_plates" type="text" inputmode="decimal" value="') + PLAN.plates.map(fmt).join(' ') + '"></div></section>' +
+      '<section class="card"><h2>' + L('Напоминания') + '</h2>' +
+      '<label class="chk"><input type="checkbox" id="set_remind"' + (PREFS.remind ? ' checked' : '') + '>' + L('Напоминать о взвешивании раз в неделю') + '</label>' +
+      '<p class="sub">' + L('Напоминание появляется на экране «Тренировка», когда с прошлого взвешивания прошло 7 дней.') + '</p></section>' +
+      '<p class="foot">' + L('Настройки сохраняются сами и попадают в резервную копию.') + '</p>';
+  }
+  function goTab(t) {
+    flushAll();
+    disarm();
+    tab = t;
+    swapOpen = null;
+    if (tab === 'log' && !dirty) loadDraft();
+    renderAll();
+    window.scrollTo(0, 0);
   }
 
   /* ---------- план ---------- */
@@ -1781,53 +2338,48 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     function f(name, label, val, im) {
       return '<label>' + label + '<input class="fi" id="p_' + ex.id + '_' + name + '" data-pex="' + ex.id + '" data-pf="' + name + '" type="text" inputmode="' + im + '" autocomplete="off" value="' + fmt(val) + '"></label>';
     }
-    var t = ex.type, fields = f('sets', t === 'cardio' ? 'Отрезков' : 'Рабочих подходов', ex.sets, 'numeric');
-    if (t === 'w' || t === 'bw') fields += f('lo', 'Повторы от', ex.lo, 'numeric') + f('hi', 'Повторы до', ex.hi, 'numeric') + f('step', t === 'bw' ? 'Шаг доп. веса, кг' : 'Шаг веса, кг', ex.step, 'decimal');
-    if (t !== 'cardio') fields += f('rest', 'Отдых, сек', ex.rest, 'numeric');
+    var t = ex.type, fields = f('sets', t === 'cardio' ? L('Отрезков') : L('Рабочих подходов'), ex.sets, 'numeric');
+    if (t === 'w' || t === 'bw') fields += f('lo', L('Повторы от'), ex.lo, 'numeric') + f('hi', L('Повторы до'), ex.hi, 'numeric') + f('step', t === 'bw' ? L('Шаг доп. веса, кг') : L('Шаг веса, кг'), ex.step, 'decimal');
+    if (t !== 'cardio') fields += f('rest', L('Отдых, сек'), ex.rest, 'numeric');
     var types = Object.keys(TYPES).map(function (k) { return '<option value="' + k + '"' + (k === t ? ' selected' : '') + '>' + TYPES[k].name + '</option>'; }).join('');
-    var groups = '<option value="">Не указана</option>' + GROUPS.map(function (g) { return '<option value="' + g[0] + '"' + (g[0] === ex.group ? ' selected' : '') + '>' + g[1] + '</option>'; }).join('');
+    var groups = L('<option value="">Не указана</option>') + GROUPS.map(function (g) { return '<option value="' + g[0] + '"' + (g[0] === ex.group ? ' selected' : '') + '>' + g[1] + '</option>'; }).join('');
     var chks = '';
     if (t === 'w') {
-      chks = '<span class="chks"><label class="chk"><input type="checkbox" id="p_' + ex.id + '_db" data-pex="' + ex.id + '" data-pf="dumbbell"' + (ex.dumbbell ? ' checked' : '') + '>Гантели (вес одной)</label>' +
-        '<label class="chk"><input type="checkbox" id="p_' + ex.id + '_bar" data-pex="' + ex.id + '" data-pf="bar"' + (ex.bar ? ' checked' : '') + '>Штанга (считать блины)</label></span>';
+      chks = '<span class="chks"><label class="chk"><input type="checkbox" id="p_' + ex.id + '_db" data-pex="' + ex.id + '" data-pf="dumbbell"' + (ex.dumbbell ? ' checked' : '') + L('>Гантели (вес одной)</label>') +
+        '<label class="chk"><input type="checkbox" id="p_' + ex.id + '_bar" data-pex="' + ex.id + '" data-pf="bar"' + (ex.bar ? ' checked' : '') + L('>Штанга (считать блины)</label></span>');
     }
     return '<div class="pe">' +
-      '<input class="fi pname" id="p_' + ex.id + '_name" data-pex="' + ex.id + '" data-pf="name" type="text" autocomplete="off" maxlength="80" aria-label="Название упражнения" value="' + esc(ex.name) + '">' +
-      '<div class="psel"><label>Тип<select class="fi" id="p_' + ex.id + '_type" data-pex="' + ex.id + '" data-pf="type">' + types + '</select></label>' +
-      '<label>Группа мышц<select class="fi" id="p_' + ex.id + '_group" data-pex="' + ex.id + '" data-pf="group">' + groups + '</select></label></div>' +
+      '<input class="fi pname" id="p_' + ex.id + '_name" data-pex="' + ex.id + L('" data-pf="name" type="text" autocomplete="off" maxlength="80" aria-label="Название упражнения" value="') + esc(ex.name) + '">' +
+      L('<div class="psel"><label>Тип<select class="fi" id="p_') + ex.id + '_type" data-pex="' + ex.id + '" data-pf="type">' + types + '</select></label>' +
+      L('<label>Группа мышц<select class="fi" id="p_') + ex.id + '_group" data-pex="' + ex.id + '" data-pf="group">' + groups + '</select></label></div>' +
       '<div class="pgrid">' + fields + '</div>' +
-      '<div class="prow">' + chks + '<span class="pbtns"><button type="button" class="ib" data-pmove="-1" data-pid="' + ex.id + '" aria-label="Выше"' + (i === 0 ? ' disabled' : '') + '>↑</button>' +
-      '<button type="button" class="ib" data-pmove="1" data-pid="' + ex.id + '" aria-label="Ниже"' + (i === n - 1 ? ' disabled' : '') + '>↓</button>' +
-      '<button type="button" class="ib danger" data-pdel="' + ex.id + '">Удалить</button></span></div></div>';
+      '<div class="prow">' + chks + '<span class="pbtns"><button type="button" class="ib" data-pmove="-1" data-pid="' + ex.id + L('" aria-label="Выше"') + (i === 0 ? ' disabled' : '') + '>↑</button>' +
+      '<button type="button" class="ib" data-pmove="1" data-pid="' + ex.id + L('" aria-label="Ниже"') + (i === n - 1 ? ' disabled' : '') + '>↓</button>' +
+      '<button type="button" class="ib danger" data-pdel="' + ex.id + L('">Удалить</button></span></div></div>');
   }
   function renderPlan() {
-    var html = '<details class="card"><summary>Как пользоваться</summary><ul class="how">' +
-      '<li>«Тренировка»: выберите день вверху и вводите вес и повторы. Под полем появляются кнопки «−» и «+», серые цифры подставляются кнопкой «Подставить».</li>' +
-      '<li>Подсказка веса: когда во всех рабочих подходах набран верх диапазона повторов, вес растёт на шаг. Если вес стоит три тренировки подряд, подсказка предложит разгрузку.</li>' +
-      '<li>Таймер отдыха запускается сам, когда подход заполнен. После последнего подхода не запускается.</li>' +
-      '<li>«Начать» и «Завершить» засекают время тренировки и показывают итог, которым можно поделиться в чат.</li>' +
-      '<li>Если тренажёр занят, упражнение можно заменить только на сегодня: план не изменится.</li>' +
-      '<li>Без интернета записи сохраняются на телефоне и отправляются в облако, когда связь появится.</li>' +
-      '<li>Резервная копия и таблица для Excel: «Обзор → Данные».</li></ul></details>' +
-      '<section class="card"><h2>Настройки</h2>' +
-      '<label class="chk"><input type="checkbox" id="set_timer"' + (PLAN.autoTimer ? ' checked' : '') + '>Запускать таймер отдыха после подхода</label>' +
-      '<div class="field"><label for="set_goal">Тренировок в неделю (цель)</label><input class="fi" id="set_goal" type="text" inputmode="numeric" value="' + PLAN.goal + '"></div>' +
-      '<div class="field"><label for="set_bar">Вес грифа, кг</label><input class="fi" id="set_bar" type="text" inputmode="decimal" value="' + fmt(PLAN.barKg) + '"></div>' +
-      '<div class="field"><label for="set_plates">Блины в зале, кг (через пробел)</label><input class="fi wide" id="set_plates" type="text" inputmode="decimal" value="' + PLAN.plates.map(fmt).join(' ') + '"></div>' +
-      '<p class="sub">Изменения сохраняются сами.</p></section>';
+    var html = L('<details class="card"><summary>Как пользоваться</summary><ul class="how">') +
+      L('<li>«Тренировка»: выберите день вверху и вводите вес и повторы. Под полем появляются кнопки «−» и «+», серые цифры подставляются кнопкой «Подставить».</li>') +
+      L('<li>Подсказка веса: когда во всех рабочих подходах набран верх диапазона повторов, вес растёт на шаг. Если вес стоит три тренировки подряд, подсказка предложит разгрузку.</li>') +
+      L('<li>Таймер отдыха запускается сам, когда подход заполнен. После последнего подхода не запускается.</li>') +
+      L('<li>«Начать» и «Завершить» засекают время тренировки и показывают итог, которым можно поделиться в чат.</li>') +
+      L('<li>Если тренажёр занят, упражнение можно заменить только на сегодня: план не изменится.</li>') +
+      L('<li>Без интернета записи сохраняются на телефоне и отправляются в облако, когда связь появится.</li>') +
+      L('<li>Язык, тема, цвет, таймер и цель на неделю — в настройках (шестерёнка вверху). Резервная копия и таблица для Excel: «Обзор → Данные».</li></ul></details>') +
+      '';
     PLAN.days.forEach(function (d) {
-      html += '<div class="dayhead"><input class="fi" id="dn_' + d.id + '" data-dname="' + d.id + '" type="text" maxlength="30" autocomplete="off" aria-label="Название дня" value="' + esc(d.name) + '">' +
-        '<button type="button" class="ib danger" data-ddel="' + d.id + '"' + (PLAN.days.length < 2 ? ' disabled' : '') + '>Удалить день</button></div>' +
+      html += '<div class="dayhead"><input class="fi" id="dn_' + d.id + '" data-dname="' + d.id + L('" type="text" maxlength="30" autocomplete="off" aria-label="Название дня" value="') + esc(d.name) + '">' +
+        '<button type="button" class="ib danger" data-ddel="' + d.id + '"' + (PLAN.days.length < 2 ? ' disabled' : '') + L('>Удалить день</button></div>') +
         d.ex.map(function (e, i) { return peHtml(e, i, d.ex.length); }).join('') +
-        '<div class="btnrow"><button type="button" class="btn ghost" data-padd="' + d.id + '">Добавить упражнение</button></div>';
+        '<div class="btnrow"><button type="button" class="btn ghost" data-padd="' + d.id + L('">Добавить упражнение</button></div>');
     });
     html += '<div class="btnrow" style="margin-top:22px">' +
-      (PLAN.days.length < MAXDAYS ? '<button type="button" class="btn" data-dadd="1">Добавить день</button>' : '') +
-      '<button type="button" class="btn ghost" data-choose="1">Сменить программу на шаблон</button></div>';
+      (PLAN.days.length < MAXDAYS ? L('<button type="button" class="btn" data-dadd="1">Добавить день</button>') : '') +
+      L('<button type="button" class="btn ghost" data-choose="1">Сменить программу на шаблон</button></div>');
     if (PLAN.archive.length) {
-      html += '<p class="sect">Вне плана (история сохранена)</p><section class="card">' + PLAN.archive.map(function (e) {
+      html += L('<p class="sect">Вне плана (история сохранена)</p><section class="card">') + PLAN.archive.map(function (e) {
         var to = dayIndex(e.day) >= 0 ? dayById(e.day) : PLAN.days[0];
-        return '<div class="lrow"><span>' + esc(e.name) + '</span><span></span><button type="button" class="btn ghost small" data-prestore="' + e.id + '">Добавить в «' + esc(to.name) + '»</button></div>';
+        return '<div class="lrow"><span>' + esc(e.name) + '</span><span></span><button type="button" class="btn ghost small" data-prestore="' + e.id + L('">Добавить в «') + esc(to.name) + '»</button></div>';
       }).join('') + '</section>';
     }
     $view.innerHTML = html;
@@ -1890,7 +2442,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     }
     if (ds.pdel) {
       id = ds.pdel;
-      if (!arm(b, 'ex:' + id, 'Точно удалить?')) return;
+      if (!arm(b, 'ex:' + id, L('Точно удалить?'))) return;
       disarm();
       var ex = BYID[id]; d = dayById(ex.day);
       d.ex.splice(d.ex.indexOf(ex), 1);
@@ -1900,7 +2452,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     }
     if (ds.padd) {
       d = dayById(+ds.padd);
-      var nx = fixEx({ id: newId(), name: 'Новое упражнение', rest: 90 }, d.id);
+      var nx = fixEx({ id: newId(), name: L('Новое упражнение'), rest: 90 }, d.id);
       d.ex.push(nx);
       reindex(); scheduleSave('plan'); renderPlan();
       var inp = document.getElementById('p_' + nx.id + '_name');
@@ -1910,7 +2462,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     if (ds.ddel) {
       id = +ds.ddel;
       if (PLAN.days.length < 2) return;
-      if (!arm(b, 'day:' + id, 'Точно удалить день?')) return;
+      if (!arm(b, 'day:' + id, L('Точно удалить день?'))) return;
       disarm();
       d = dayById(id);
       d.ex.forEach(function (e) { if (history(e.id).length) PLAN.archive.push(e); else noteDirty[e.id] = ''; });
@@ -1923,7 +2475,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     if (ds.dadd) {
       if (PLAN.days.length >= MAXDAYS) return;
       var nid = maxDayId() + 1;
-      PLAN.days.push({ id: nid, name: 'День ' + (PLAN.days.length + 1), ex: [] });
+      PLAN.days.push({ id: nid, name: L('День ') + (PLAN.days.length + 1), ex: [] });
       reindex(); scheduleSave('plan'); renderPlan();
       var dn = document.getElementById('dn_' + nid);
       if (dn) { dn.focus(); dn.select(); }
@@ -1972,14 +2524,14 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   function tableText(kind) {
     var rows;
     if (kind === 'body') {
-      rows = [['Дата', 'Вес, кг']].concat(BODY.items.map(function (x) { return [x.date, fmt(x.kg)]; }));
+      rows = [[L('Дата'), L('Вес, кг')]].concat(BODY.items.map(function (x) { return [x.date, fmt(x.kg)]; }));
     } else {
-      rows = [['Дата', 'День', 'Упражнение', 'Тип', 'Подход', 'Вес, кг / км', 'Повторы / сек / мин', 'Ощущение']];
+      rows = [[L('Дата'), L('День'), L('Упражнение'), L('Тип'), L('Подход'), L('Вес, кг / км'), L('Повторы / сек / мин'), L('Ощущение')]];
       sessionsSorted().forEach(function (x) {
         var dn = dayById(x.doc.day).name;
         Object.keys(x.doc.entries).forEach(function (k) {
           var e = norm(x.doc.entries[k]), nm = exName(k), fl = e.feel ? FEEL[e.feel] : '', tp = TYPES[exType(k)].name;
-          if (filled(e.w)) rows.push([x.doc.date, dn, nm, tp, 'Разминка', fmt(e.w.kg), fmt(e.w.reps), '']);
+          if (filled(e.w)) rows.push([x.doc.date, dn, nm, tp, L('Разминка'), fmt(e.w.kg), fmt(e.w.reps), '']);
           e.s.forEach(function (c, i) { if (filled(c)) rows.push([x.doc.date, dn, nm, tp, String(i + 1), fmt(c.kg), fmt(c.reps), fl]); });
         });
       });
@@ -2003,11 +2555,13 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   }
   function resetAll(withPlan) {
     ['sess', 'plan', 'body'].forEach(function (k) { clearTimeout(timers[k]); timers[k] = null; pend[k] = false; });
+    if (withPlan) initConsts();
     stopRest();
     var del = {}, re = withPlan ? /^(s_|b_|cfg_|n_)/ : /^(s_|b_)/;
     Object.keys(S).forEach(function (id) { del['s_' + id] = 1; });
     BODY.items.forEach(function (x) { del['b_' + x.date.slice(0, 4)] = 1; });
-    Object.keys(MIR).forEach(function (k) { if (re.test(k)) del[k] = 1; });
+    function hit(k) { return re.test(k) && k !== 'cfg_prefs'; }
+    Object.keys(MIR).forEach(function (k) { if (hit(k)) del[k] = 1; });
     if (withPlan) {
       del.cfg_plan = 1;
       Object.keys(storedDays).forEach(function (id) { del['cfg_day' + id] = 1; });
@@ -2041,27 +2595,27 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     runJob(function () {
       var listed = KV.keys().then(function (l) { return l || []; }, function () { return []; });
       return listed.then(function (l) {
-        l.forEach(function (k) { if (re.test(k)) del[k] = 1; });
+        l.forEach(function (k) { if (hit(k)) del[k] = 1; });
         return Object.keys(del).reduce(function (pr, k) { return pr.then(function () { return kvPut(k, null); }); }, Promise.resolve());
       });
     });
     if (!withPlan) scheduleSave('plan');
     renderAll();
     window.scrollTo(0, 0);
-    showNote(withPlan ? 'Все записи и программа удалены. Выберите программу, чтобы начать заново.' : 'Все тренировки и вес тела удалены. Программа осталась, можно начинать заново.');
+    showNote(withPlan ? L('Все записи и программа удалены. Выберите программу, чтобы начать заново.') : L('Все тренировки и вес тела удалены. Программа осталась, можно начинать заново.'));
     haptic();
   }
   function backupText() {
-    return JSON.stringify({ format: 'podhody', v: 3, S: S, plan: planDoc(), body: { items: BODY.items } });
+    return JSON.stringify({ format: 'podhody', v: 3, S: S, plan: planDoc(), body: { items: BODY.items }, prefs: PREFS });
   }
   function copyText(text, okMsg, msgId, boxId) {
     var m = document.getElementById(msgId || 'dmsg'), box = boxId ? document.getElementById(boxId) : document.getElementById('copybox');
     function manual() {
       if (box) { box.hidden = false; box.value = text; box.focus(); box.select(); }
-      if (m) m.textContent = 'Скопировать автоматически не получилось.' + (box ? ' Текст выделен ниже, скопируйте его вручную.' : '');
+      if (m) m.textContent = L('Скопировать автоматически не получилось.') + (box ? L(' Текст выделен ниже, скопируйте его вручную.') : '');
     }
     if (box) box.hidden = true;
-    if (!text) { if (m) m.textContent = 'Пока нечего копировать.'; return; }
+    if (!text) { if (m) m.textContent = L('Пока нечего копировать.'); return; }
     try { navigator.clipboard.writeText(text).then(function () { if (m) m.textContent = okMsg; haptic(); }, manual); }
     catch (e) { manual(); }
   }
@@ -2070,15 +2624,20 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     if (inTg && tgAtLeast('6.1')) {
       try { tg.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(text)); return; } catch (e) { /* откроем копирование */ }
     }
-    copyText(text, 'Итог скопирован, вставьте его в любой чат.', 'smsg', null);
+    copyText(text, L('Итог скопирован, вставьте его в любой чат.'), 'smsg', null);
   }
   function doImport() {
     var m = document.getElementById('imsg'), txt = document.getElementById('impbox').value.trim(), o;
     m.className = 'msg';
-    try { o = JSON.parse(txt); } catch (e) { m.textContent = 'Не получилось прочитать текст. Скопируйте его целиком ещё раз.'; return; }
-    if (!o || o.format !== 'podhody' || !o.S || typeof o.S !== 'object') { m.textContent = 'Это не данные дневника подходов.'; return; }
+    try { o = JSON.parse(txt); } catch (e) { m.textContent = L('Не получилось прочитать текст. Скопируйте его целиком ещё раз.'); return; }
+    if (!o || o.format !== 'podhody' || !o.S || typeof o.S !== 'object') { m.textContent = L('Это не данные дневника подходов.'); return; }
     flushAll();
     var n = 0, ops = [];
+    if (o.prefs && typeof o.prefs === 'object') {
+      var pp = cleanPrefs(o.prefs), lg = pp.lang;
+      pp.lang = PREFS.lang; PREFS = pp;
+      setLang(lg); applyTheme(); savePrefs();
+    }
     var np = o.plan ? cleanPlan(o.plan) : null;
     if (np) {
       Object.keys(BYID).forEach(function (id) { noteDirty[id] = ''; });
@@ -2123,7 +2682,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     pickDefaults();
     loadDraft();
     renderAll();
-    var mm = document.getElementById('imsg'), done = 'Загружено тренировок: ' + n + '.';
+    var mm = document.getElementById('imsg'), done = L('Загружено тренировок: ') + n + '.';
     if (mm) { mm.className = 'msg info'; mm.textContent = done; } else showNote(done);
     haptic('done');
   }
@@ -2164,6 +2723,13 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     if (ds.pex) { planField(t, true); return; }
     if (ds.swsel) { var ni = document.getElementById('swname_' + ds.swsel); if (ni) { ni.hidden = t.value !== '__new'; if (!ni.hidden) ni.focus(); } return; }
     if (ds.dname !== undefined) { var d = dayById(+ds.dname); if (!t.value.trim()) t.value = d.name; return; }
+    if (t.id === 'set_remind') { PREFS.remind = t.checked; savePrefs(); return; }
+    if (t.id === 'set_h') {
+      var h = parseNum(t.value), m = document.getElementById('setmsg');
+      if (t.value.trim() === '') { PREFS.height = null; savePrefs(); if (m) m.textContent = ''; renderSettings(); return; }
+      if (h == null || h < 100 || h > 250) { if (m) m.textContent = L('Введите рост от 100 до 250 см.'); t.value = PREFS.height || ''; return; }
+      PREFS.height = Math.round(h); savePrefs(); renderSettings(); return;
+    }
     if (t.id === 'set_timer') { PLAN.autoTimer = t.checked; scheduleSave('plan'); return; }
     if (t.id === 'set_goal') { PLAN.goal = num(parseNum(t.value), 1, 7, PLAN.goal, true); t.value = PLAN.goal; scheduleSave('plan'); return; }
     if (t.id === 'set_bar') { PLAN.barKg = num(parseNum(t.value), 0, 50, PLAN.barKg); t.value = fmt(PLAN.barKg); scheduleSave('plan'); return; }
@@ -2197,7 +2763,7 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     ev.preventDefault();
     var kg = parseNum(document.getElementById('bkg').value);
     var d = document.getElementById('bdate').value || todayStr();
-    if (kg == null || kg < 25 || kg > 300) { document.getElementById('bmsg').textContent = 'Введите вес от 25 до 300 кг.'; return; }
+    if (kg == null || kg < 25 || kg > 300) { document.getElementById('bmsg').textContent = L('Введите вес от 25 до 300 кг.'); return; }
     BODY.items = BODY.items.filter(function (x) { return x.date !== d; });
     BODY.items.push({ date: d, kg: r2(kg) });
     BODY.items.sort(function (a, b) { return a.date < b.date ? -1 : 1; });
@@ -2213,6 +2779,10 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
     if (!b) return;
     var ds = b.dataset, id, e, prev, ex, i;
     if (ds.reload) { location.reload(); return; }
+    if (ds.lang) { setLang(ds.lang); savePrefs(); renderAll(); haptic(); return; }
+    if (ds.thm) { PREFS.theme = ds.thm; savePrefs(); applyTheme(); renderSettings(); haptic(); return; }
+    if (ds.acc) { PREFS.accent = ds.acc; savePrefs(); applyTheme(); renderSettings(); haptic(); return; }
+    if (ds.goweigh) { goTab('over'); var bc = document.getElementById('bkg'); if (bc) { bc.scrollIntoView({ block: 'center' }); bc.focus(); } return; }
     if (ds.tpl) { applyTemplate(ds.tpl); haptic('done'); return; }
     if (ds.cancel) { choosing = false; renderAll(); return; }
     if (ds.choose) { flushAll(); choosing = true; renderAll(); window.scrollTo(0, 0); return; }
@@ -2287,25 +2857,25 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
       return;
     }
     if (ds.sdelcur) {
-      if (!arm(b, 'cur:' + curId(), 'Точно удалить тренировку?')) return;
+      if (!arm(b, 'cur:' + curId(), L('Точно удалить тренировку?'))) return;
       disarm();
       deleteSession(curId());
       stopRest();
       renderAll();
-      showNote('Тренировка удалена.');
+      showNote(L('Тренировка удалена.'));
       window.scrollTo(0, 0);
       return;
     }
     if (ds.reset) {
       var withPlan = !!(document.getElementById('rs_plan') || {}).checked;
-      if (!arm(b, 'reset', withPlan ? 'Удалить всё вместе с программой? Нажмите ещё раз' : 'Удалить все тренировки и вес? Нажмите ещё раз')) return;
+      if (!arm(b, 'reset', withPlan ? L('Удалить всё вместе с программой? Нажмите ещё раз') : L('Удалить все тренировки и вес? Нажмите ещё раз'))) return;
       disarm();
-      askConfirm(withPlan ? 'Удалить все тренировки, вес тела и программу? Отменить это нельзя.' : 'Удалить все тренировки и вес тела? Программа останется. Отменить это нельзя.', function () { resetAll(withPlan); });
+      askConfirm(withPlan ? L('Удалить все тренировки, вес тела и программу? Отменить это нельзя.') : L('Удалить все тренировки и вес тела? Программа останется. Отменить это нельзя.'), function () { resetAll(withPlan); });
       return;
     }
     if (ds.sdel) {
       id = ds.sdel;
-      if (!arm(b, 's:' + id, 'Удалить?')) return;
+      if (!arm(b, 's:' + id, L('Удалить?'))) return;
       disarm();
       deleteSession(id);
       renderOver();
@@ -2319,8 +2889,8 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
       return;
     }
     if (ds.cp) {
-      if (ds.cp === 'backup') copyText(backupText(), 'Резервная копия скопирована. Отправьте её себе в «Избранное» Телеграма.', ds.cpm, ds.cpm ? 'rbox' : undefined);
-      else copyText(tableText(ds.cp), 'Таблица скопирована, вставьте её в Excel или Google Таблицы.');
+      if (ds.cp === 'backup') copyText(backupText(), L('Резервная копия скопирована. Отправьте её себе в «Избранное» Телеграма.'), ds.cpm, ds.cpm ? 'rbox' : undefined);
+      else copyText(tableText(ds.cp), L('Таблица скопирована, вставьте её в Excel или Google Таблицы.'));
       return;
     }
     if (ds.import) { doImport(); return; }
@@ -2339,15 +2909,10 @@ svg.chart { display: block; width: 100%; height: auto; margin-top: 6px; }
   document.getElementById('tabs').addEventListener('click', function (ev) {
     var b = ev.target.closest('button[data-tab]');
     if (!b || b.dataset.tab === tab) return;
-    flushAll();
-    disarm();
     haptic();
-    tab = b.dataset.tab;
-    swapOpen = null;
-    if (tab === 'log' && !dirty) loadDraft();
-    renderAll();
-    window.scrollTo(0, 0);
+    goTab(b.dataset.tab);
   });
+  document.getElementById('setbtn').addEventListener('click', function () { haptic(); goTab(tab === 'set' ? 'log' : 'set'); });
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'hidden') flushAll();
     else { if (T.iv) lockScreen(); flushOutbox(); }
